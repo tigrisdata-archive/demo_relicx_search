@@ -1,4 +1,4 @@
-# Fullstack example with Next.js (REST API)
+# Relicx session search demo with Next.js (REST API)
 
 This example shows how to implement a fullstack app in TypeScript with
 [Next.js](https://nextjs.org/) using [React](https://reactjs.org/) and
@@ -6,68 +6,17 @@ This example shows how to implement a fullstack app in TypeScript with
 
 ## Getting started
 
-### 1. Download the example
-
-Download this example:
-
-```
-npx create-tigris-app@latest --example nextjs-api-routes
-```
-
-The above command will also take care of installing the dependencies.
+### 1. Seed the data
 
 ```shell
-✔ What is your project named? … mytodo
-✔ What is the clientId? … my_client_id
-✔ What is the clientSecret? … ****************
-Creating a new app in /Users/ovaistariq/projects/mytodo.
-
-Downloading files for example nextjs-api-routes. This might take a moment.
-
-
-Initializing project with template: nextjs-api-routes
-
-Using npm.
-
-Installing dependencies:
-- @next/font: ^13.0.6
-- @tigrisdata/core: 1.0.0-dev.1
-- next: ^13.0.6
-- react: ^18.2.0
-- react-dom: ^18.2.0
-
-
-added 302 packages, and audited 303 packages in 10s
-
-88 packages are looking for funding
-  run `npm fund` for details
-
-found 0 vulnerabilities
-Initialized a git repository.
-
-
-Success! Created mytodo at /Users/ovaistariq/projects/mytodo
-
-Inside that directory, you can run several commands:
-
-  npm run dev
-    Starts the development server.
-
-  npm run build
-    Builds the app for production.
-
-  npm start
-    Runs the built app in production mode.
-
-We suggest that you begin by typing:
-
-  cd /Users/ovaistariq/projects/mytodo
-  npm run dev
+npm run seed
 ```
+
+This seeds the search index with the data in [scripts/data/session.json.gz](scripts/data/session.json.gz)
 
 ### 2. Start the app
 
-```
+```shell
 npm run dev
 ```
 
@@ -75,23 +24,20 @@ The app is now running, navigate to http://localhost:3000/ in your browser to ex
 
 ## Next.js API routes
 
-All the Next.js API routes are defined under `pages/api/`. We have three
+All the Next.js API routes are defined under `pages/api/`. We have following
 files exposing endpoints:
 
-#### [`pages/api/items/index.ts`](pages/api/items/index.ts)
-
-- `GET /api/items` to get an array of to-do items as Array<TodoItem>
-- `POST /api/items` to add an item to the list
-
-#### [`/pages/api/items/search.ts`](/pages/api/items/search.ts)
-
-- `GET /api/items/search?q=query` to find and return items matching the given query
-
-#### [`pages/api/item/[id].ts`](pages/api/item/[id].ts)
-
-- `GET /api/item/{id}` to fetch an item
-- `PUT /api/item/{id}` to update the given item
-- `DELETE /api/item/[id]` to delete an item
+- `/api/search?q={searchString}&page={page}&size={size}&order={order}`: Search sessions
+  - Query Parameters
+    - `searchString` (required): This searches sessions by `record.*`
+    - `size` (optional): This specifies how many sessions should be returned in
+      the result
+    - `page` (optional): This specifies the page number to be returned when
+      there are more than one page of search results
+    - `order` (optional): The sort order for results in either ascending or
+      descending order. The value can either `asc` or `desc`
+  - Example
+    - `curl http://localhost:3000/api/items/search?q=chrome&size=1`
 
 <details>
 <summary>Expand for a code walkthrough</summary>
@@ -109,19 +55,14 @@ files exposing endpoints:
 └── pages
     ├── index.tsx
     └── api
-        ├── item
-        │   ├── [id].ts
         └── items
-            ├── index.ts
             └── search.ts
 ```
 
-### 🪢 Data model definition
+### 🪢 Search model definition
 
-[models/todoItems.ts](db/models/todoItems.ts) - The to-do list app
-has a single collection `todoItems` that stores the to-do items in the
-database. The collection gets automatically created by the
-[setup script](setup.ts).
+[models/session.ts](search/models/session.ts) - The app  has a single 
+search index `session` that stores the relicx sessions.
 
 ### 🌐 Connecting to Tigris
 
@@ -131,60 +72,6 @@ Functions, Netlify Functions, and AWS Lambda. It allows reusing the client
 across requests.
 
 </details>
-
-## Evolving the app
-
-Evolving the application typically requires three steps:
-
-1. Update the data model in the application
-2. Update your server-side application code
-3. Build new UI features in React
-
-For the following example scenario, assume you want to add a "category"
-feature to the app where users can add a category when adding a todo item.
-
-### 1. Update the data model
-
-The first step is to extend the `todoItems` data model:
-
-```diff
-// ./models/todoItems.ts
-
-import {
-  Field,
-  PrimaryKey,
-  TigrisCollection,
-  TigrisDataTypes,
-} from "@tigrisdata/core";
-
-@TigrisCollection("todoItems")
-export class TodoItem {
-  @PrimaryKey(TigrisDataTypes.INT32, { order: 1, autoGenerate: true })
-  id!: number;
-
-  @Field()
-  text!: string;
-
-  @Field({ default: false })
-  completed!: boolean;
-+
-+  @Field()
-+  category!: string;
-}
-```
-
-Once you've updated your data model, restarting the App will
-apply the data model changes to the database.
-
-### 2. Update your server-side application code
-
-Next update the Next.js API routes to use the new `category` field in the
-data model.
-
-### 3. Build new UI features in React
-
-Once you have updated the API routes, you can start updating the UI
-component in React.
 
 ## Next steps
 

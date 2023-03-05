@@ -1,7 +1,7 @@
-import { DB, Tigris } from "@tigrisdata/core";
+import { Search, Tigris } from "@tigrisdata/core";
 
 const tigrisClient = new Tigris();
-const tigrisDB: DB = tigrisClient.getDatabase();
+const searchClient: Search = tigrisClient.getSearch();
 
 // export to share DB across modules
-export default tigrisDB;
+export default searchClient;

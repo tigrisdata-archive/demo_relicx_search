@@ -1,32 +1,79 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { TodoItem } from "../../../db/models/todoItems";
-import { SearchQuery } from "@tigrisdata/core";
-import tigrisDB from "../../../lib/tigris";
+import { Order } from "@tigrisdata/core";
+import { SearchQuery, SearchResult } from "@tigrisdata/core/dist/search";
+import searchClient from "../../../lib/tigris";
+import { Session, SESSION_INDEX_NAME } from "../../../search/models/session";
 
 type Data = {
-  result?: Array<TodoItem>;
+  result?: SearchResult<Session>;
   error?: string;
 };
 
-// GET /api/items/search?q=searchQ -- searches for items matching text `searchQ`
+// GET /api/items/search?q=searchQ&page=1&size=10&order=desc -- searches for items matching text `searchQ`
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  const query = req.query["q"];
-  if (query === undefined) {
+  const { q, page, size, order } = req.query;
+
+  if (q === undefined) {
     res.status(400).json({ error: "No search query found in request" });
     return;
   }
   try {
-    const itemsCollection = tigrisDB.getCollection<TodoItem>(TodoItem);
-    const searchQuery: SearchQuery<TodoItem> = { q: query as string };
-    const searchResult = itemsCollection.search(searchQuery);
-    const items = new Array<TodoItem>();
-    for await (const res of searchResult) {
-      res.hits.forEach((hit) => items.push(hit.document));
-    }
-    res.status(200).json({ result: items });
+    const index = await searchClient.getIndex<Session>(SESSION_INDEX_NAME);
+
+    const request: SearchQuery<Session> = {
+      q: q as string,
+      searchFields: [
+        "record.app_id",
+        "record.org_id",
+        "record.session_id",
+        "record.user_id",
+        "record.browser",
+        "record.geo_coordinates.city",
+        "record.geo_coordinates.state",
+        "record.geo_coordinates.countryCode",
+        "record.geo_coordinates.countryName",
+        "record.geo_coordinates.IPv4",
+        "record.device",
+        "record.entry_url",
+        "record.hostname",
+        "record.labels",
+        "record.platform",
+        "record.language",
+        "record.capturedSessionState",
+        "record.vendor",
+      ],
+      facets: [
+        "record.geo_coordinates.city",
+        "record.geo_coordinates.state",
+        "record.geo_coordinates.countryCode",
+        "record.geo_coordinates.countryName",
+        "record.browser",
+        "record.device",
+        "record.platform",
+        "record.language",
+        "record.vendor",
+      ],
+      sort: [
+        {
+          field: "created_at",
+          order:
+            order?.toString().toLowerCase() == "asc" ? Order.ASC : Order.DESC,
+        },
+      ],
+      hitsPerPage: Number(size) || 10,
+    };
+
+    index
+      .search(request, Number(page) || 1)
+      .then((results) => {
+        res.status(200).json({ result: results });
+      })
+      .catch((error) => {
+        throw error;
+      });
   } catch (err) {
     const error = err as Error;
     res.status(500).json({ error: error.message });
