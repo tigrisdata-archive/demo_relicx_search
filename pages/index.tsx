@@ -1,12 +1,11 @@
-import type { GetServerSideProps, NextPage } from "next";
-import Image from "next/image";
-import Head from "next/head";
-import { useState } from "react";
-import EachTodo from "../components/EachToDo";
-import LoaderWave from "../components/LoaderWave";
-import { TodoItem } from "../db/models/todoItems";
-import tigrisDB from "../lib/tigris";
-import styles from "../styles/Home.module.css";
+import type { NextPage } from 'next'
+import Image from 'next/image'
+import Head from 'next/head'
+import { useState } from 'react'
+import EachTodo from '../components/EachToDo'
+import LoaderWave from '../components/LoaderWave'
+import { TodoItem } from '../db/models/todoItems'
+import styles from '../styles/Home.module.css'
 
 type Props = {
   items: Array<TodoItem>;
@@ -246,15 +245,6 @@ const Home: NextPage<Props> = ({ items }) => {
       </div>
     </div>
   );
-};
-
-export const getServerSideProps: GetServerSideProps = async () => {
-  const itemsCollection = tigrisDB.getCollection<TodoItem>(TodoItem);
-  const cursor = itemsCollection.findMany();
-  const items = await cursor.toArray();
-  return {
-    props: { items },
-  };
 };
 
 export default Home;
