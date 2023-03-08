@@ -26,7 +26,7 @@ export type ISearchResult = {
   _facets: IFacets;
   _meta: {
     _found: number;
-    _total_pages: number;
+    _totalPages: number;
     _page: {
       _current: number;
       _size: number;
@@ -34,21 +34,21 @@ export type ISearchResult = {
   };
 };
 
-type IFacets = {
+export type IFacets = {
   [k in string]: IFacetEach;
 };
 
 type IFacetEach = {
   _counts: {
     _count: number;
-    _value?: string;
+    _value: string;
   }[];
-  stats: IStatsEach;
+  _stats: IStatsEach;
 };
 
-type IStatsEach = {
+export type IStatsEach = {
   _avg?: string;
-  _count: number;
+  _count?: number;
   _max?: number;
   _min?: number;
   _sum?: number;

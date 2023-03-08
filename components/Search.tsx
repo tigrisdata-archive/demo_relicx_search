@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Block, Card, ColGrid, Tab, TabList, Title } from '@tremor/react';
+import { Tab, TabList, Title } from '@tremor/react';
 import { ISearchResponse, ISearchResult, ResultDataType, SearchStateType } from './types';
 import QueryDateSelector from './QueryDateSelector';
 import Results from './Results';
@@ -8,7 +8,7 @@ import SampleDetail from './SampleDetail';
 const result: ISearchResult = {
   _hits: [],
   _facets: {},
-  _meta: { _found: 0, _total_pages: 0, _page: { _current: 0, _size: 0 } },
+  _meta: { _found: 0, _totalPages: 0, _page: { _current: 0, _size: 0 } },
 };
 
 export default function Search() {
@@ -45,6 +45,8 @@ export default function Search() {
     <main className='bg-slate-50 p-6 sm:p-10'>
       <Title>Dashboard</Title>
 
+      <button className='rounded-full'>Save Changes</button>
+
       <QueryDateSelector
         query={searchedState.query}
         queryUpdated={(q: string) => {
@@ -58,11 +60,7 @@ export default function Search() {
 
       {selectedView === 1 ? (
         <>
-          <Card marginTop='mt-10'>
-            <Title>Result</Title>
-
-            <Results data={resultData.result}></Results>
-          </Card>
+          <Results data={resultData.result}></Results>
         </>
       ) : (
         <SampleDetail></SampleDetail>
