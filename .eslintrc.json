@@ -1,5 +1,10 @@
 {
-  "extends": ["plugin:@typescript-eslint/recommended", "next/core-web-vitals"],
+  "extends": ["plugin:@typescript-eslint/recommended", "next/core-web-vitals", "prettier"],
   "parser": "@typescript-eslint/parser",
-  "plugins": ["@typescript-eslint", "functional", "unused-imports"]
+  "plugins": ["@typescript-eslint", "functional", "unused-imports", "prettier"],
+
+  "rules": {
+    "no-console": "error",
+    "@typescript-eslint/ban-types": "off"
+  }
 }

@@ -1,12 +1,14 @@
-import Head from 'next/head'
+import Head from 'next/head';
+import Search from '../components/Search';
 
 const Home = () => {
   return (
     <div>
       <Head>
-        <title>Todo App using Next.js + Tigris</title>
-        <meta name="description" content="Tigris app tutorial" />
+        <title>Search</title>
+        <meta name='description' content='' />
       </Head>
+      <Search></Search>
     </div>
   );
 };
