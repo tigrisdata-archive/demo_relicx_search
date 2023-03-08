@@ -18,8 +18,10 @@
     "@tremor/react": "^1.8.2",
     "heroicons": "^1.0.6",
     "json-bigint": "^1.0.0",
+    "moment": "^2.29.4",
     "next": "^13.0.6",
     "react": "^18.2.0",
+    "react-data-table-component": "^7.5.3",
     "react-dom": "^18.2.0",
     "reflect-metadata": "^0.1.13",
     "stream-json": "^1.7.5"

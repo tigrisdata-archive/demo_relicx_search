@@ -1,11 +1,5 @@
 import {
   Text,
-  Table,
-  TableHead,
-  TableHeaderCell,
-  TableRow,
-  TableBody,
-  TableCell,
   Card,
   Title,
   Flex,
@@ -16,9 +10,12 @@ import {
   Legend,
   DonutChart,
   BarChart,
+  ColGrid,
+  Col,
 } from '@tremor/react';
 import { IFacets, ISearchResult, IStatsEach } from './types';
 import { useMemo } from 'react';
+import DataTable, { TableColumn } from 'react-data-table-component';
 
 type Props = {
   data: ISearchResult;
@@ -39,9 +36,58 @@ const MapDataForBarlistFromAFacet = (facetKey: string, facet: IFacets) => {
 
 const valueFormatter = (number: number) => `Count ${number.toString()}`;
 
+type EachRow = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  _document: { [key: string]: any };
+};
+const columns: TableColumn<EachRow>[] = [
+  {
+    name: 'timestamp',
+    selector: (row: EachRow) => row._document.record['timestamp'],
+  },
+  {
+    name: 'session_id',
+    selector: (row: EachRow) => row._document.record['session_id'],
+  },
+
+  {
+    name: 'entry_url',
+    selector: (row: EachRow) => row._document.record['entry_url'],
+  },
+  {
+    name: 'origin',
+    selector: (row: EachRow) => row._document.record['origin'],
+  },
+  {
+    name: 'browser',
+    selector: (row: EachRow) => row._document.record['browser'],
+  },
+  {
+    name: 'vendor',
+    selector: (row: EachRow) => row._document.record['vendor'],
+  },
+  {
+    name: 'hostname',
+    selector: (row: EachRow) => row._document.record['hostname'],
+  },
+  {
+    name: 'user_agent',
+    selector: (row: EachRow) => row._document.record['user_agent'],
+  },
+];
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const ExpandedComponent = ({ data }: any) => {
+  return (
+    <>
+      <pre className='text-xs leading-tight p-6'>{JSON.stringify(data, null, 2)}</pre>
+    </>
+  );
+};
+
 export default function Results({ data }: Props) {
   const browserBarListData = useMemo(() => {
-    return MapDataForBarlistFromAFacet('record.browser', data._facets);
+    return MapDataForBarlistFromAFacet('record.geo_coordinates.city', data._facets);
   }, [data._facets]);
 
   const platformBarListData = useMemo(() => {
@@ -50,145 +96,136 @@ export default function Results({ data }: Props) {
 
   return (
     <>
-      <Flex
-        justifyContent='justify-between'
-        alignItems='items-stretch'
-        spaceX='space-x-4'
-        truncate={false}
-        marginTop='mt-0'>
-        <Card marginTop='mt-10' decoration='top' decorationColor={'indigo'}>
-          <Text> Total results </Text>
-          <Metric> {data._meta._found} </Metric>
-          <Text>{data._meta._page._size} results per page</Text>
-        </Card>
+      <ColGrid numCols={8} gapX='gap-x-6' gapY='gap-y-6' marginTop='mt-4'>
+        <Col numColSpan={2}>
+          <Card marginTop='mt-0' decoration='top' decorationColor={'indigo'}>
+            <Text> Total results </Text>
+            <Metric> {data._meta._found} </Metric>
+            <Text>{data._meta._page._size} results per page</Text>
+          </Card>
 
-        <Card marginTop='mt-10'>
-          <Title>Browser</Title>
-          <Flex marginTop='mt-4'>
-            <Text>
-              <Bold>Source</Bold>
-            </Text>
-            <Text>
-              <Bold>Counts</Bold>
-            </Text>
-          </Flex>
-          <BarList data={browserBarListData.counts} marginTop='mt-2' />
-          <Legend
-            categories={[
-              `Average ${browserBarListData.stats._avg}`,
-              `Count ${browserBarListData.stats._count}`,
-              `Max ${browserBarListData.stats._max}`,
-              `Min ${browserBarListData.stats._min}`,
-              `Sum ${browserBarListData.stats._sum}`,
-            ]}
-            colors={['emerald', 'red', 'orange', 'teal', 'fuchsia']}
-            marginTop='mt-3'
-          />
-        </Card>
+          <Card marginTop='mt-4'>
+            <Title>Browser</Title>
+            <Flex marginTop='mt-4'>
+              <Text>
+                <Bold>Source</Bold>
+              </Text>
+              <Text>
+                <Bold>Counts</Bold>
+              </Text>
+            </Flex>
+            <BarList data={browserBarListData.counts} marginTop='mt-2' />
+            <Legend
+              categories={[
+                `Count ${browserBarListData.stats._count}`,
+                `Max ${browserBarListData.stats._max}`,
+                `Min ${browserBarListData.stats._min}`,
+                `Sum ${browserBarListData.stats._sum}`,
+              ]}
+              colors={['emerald', 'red', 'orange', 'teal', 'fuchsia']}
+              marginTop='mt-3'
+            />
+          </Card>
 
-        <Card marginTop='mt-10'>
-          <Title>Platform</Title>
-          <Flex marginTop='mt-4'>
-            <Text>
-              <Bold>Source</Bold>
-            </Text>
-            <Text>
-              <Bold>Counts</Bold>
-            </Text>
-          </Flex>
-          <BarList data={platformBarListData.counts} marginTop='mt-2' />
-          <Legend
-            categories={[
-              `Average ${platformBarListData.stats._avg}`,
-              `Count ${platformBarListData.stats._count}`,
-              `Max ${platformBarListData.stats._max}`,
-              `Min ${platformBarListData.stats._min}`,
-              `Sum ${platformBarListData.stats._sum}`,
-            ]}
-            colors={['emerald', 'red', 'orange', 'teal', 'fuchsia']}
-            marginTop='mt-3'
-          />
-        </Card>
+          <Card marginTop='mt-4'>
+            <Title>Platform</Title>
+            <Flex marginTop='mt-4'>
+              <Text>
+                <Bold>Source</Bold>
+              </Text>
+              <Text>
+                <Bold>Counts</Bold>
+              </Text>
+            </Flex>
+            <BarList data={platformBarListData.counts} marginTop='mt-2' />
+            <Legend
+              categories={[
+                `Count ${platformBarListData.stats._count}`,
+                `Max ${platformBarListData.stats._max}`,
+                `Min ${platformBarListData.stats._min}`,
+                `Sum ${platformBarListData.stats._sum}`,
+              ]}
+              colors={['emerald', 'red', 'orange', 'teal', 'fuchsia']}
+              marginTop='mt-3'
+            />
+          </Card>
 
-        <Card maxWidth='max-w-lg'>
-          <Title>Vendor</Title>
-          <DonutChart
-            data={data._facets['record.vendor'] ? data._facets['record.vendor']._counts : []}
-            category='_count'
-            dataKey='_value'
-            marginTop='mt-6'
-            valueFormatter={valueFormatter}
-            colors={['slate', 'violet', 'indigo', 'rose', 'cyan', 'amber']}
-          />
-        </Card>
+          <Card marginTop='mt-4'>
+            <Title>City</Title>
+            <Subtitle>Count per city</Subtitle>
+            <BarChart
+              data={
+                data._facets['record.geo_coordinates.city'] ? data._facets['record.geo_coordinates.city']._counts : []
+              }
+              dataKey='_value'
+              categories={['_count']}
+              colors={['amber']}
+              marginTop='mt-6'
+              yAxisWidth='w-12'
+            />
+          </Card>
+        </Col>
 
-        <Card maxWidth='max-w-lg'>
-          <Title>Device</Title>
-          <DonutChart
-            data={data._facets['record.device'] ? data._facets['record.device']._counts : []}
-            category='_count'
-            dataKey='_value'
-            marginTop='mt-6'
-            valueFormatter={valueFormatter}
-            colors={['slate', 'violet', 'indigo', 'rose', 'cyan', 'amber']}
-          />
-        </Card>
-      </Flex>
+        <Col numColSpan={6}>
+          <ColGrid numCols={4} gapX='gap-x-6' gapY='gap-y-6'>
+            <Col numColSpan={1}>
+              <Card hFull={true} decoration='top' decorationColor={'stone'}>
+                <Title>Vendor</Title>
+                <DonutChart
+                  data={data._facets['record.vendor'] ? data._facets['record.vendor']._counts : []}
+                  category='_count'
+                  dataKey='_value'
+                  marginTop='mt-0'
+                  valueFormatter={valueFormatter}
+                  colors={['slate', 'violet', 'indigo', 'rose', 'cyan', 'amber']}
+                />
+              </Card>
+            </Col>
+            <Col numColSpan={1}>
+              <Card decoration='top' decorationColor={'amber'} hFull={true}>
+                <Title>Device</Title>
+                <DonutChart
+                  data={data._facets['record.device'] ? data._facets['record.device']._counts : []}
+                  category='_count'
+                  dataKey='_value'
+                  marginTop='mt-0'
+                  valueFormatter={valueFormatter}
+                  colors={['slate', 'violet', 'indigo', 'rose', 'cyan', 'amber']}
+                />
+              </Card>
+            </Col>
 
-      <Card marginTop='mt-6'>
-        <Title>City</Title>
-        <Subtitle>Count per city</Subtitle>
-        <BarChart
-          data={data._facets['record.geo_coordinates.city'] ? data._facets['record.geo_coordinates.city']._counts : []}
-          dataKey='_value'
-          categories={['_count']}
-          colors={['amber']}
-          marginTop='mt-6'
-          yAxisWidth='w-12'
-        />
-      </Card>
+            <Col numColSpan={2}>
+              <Card marginTop='mt-0'>
+                <Title>Country</Title>
+                <Subtitle>Count per country</Subtitle>
+                <BarChart
+                  data={
+                    data._facets['record.geo_coordinates.countryName']
+                      ? data._facets['record.geo_coordinates.countryName']._counts
+                      : []
+                  }
+                  dataKey='_value'
+                  categories={['_count']}
+                  colors={['rose']}
+                  marginTop='mt-6'
+                  yAxisWidth='w-12'
+                />
+              </Card>
+            </Col>
+          </ColGrid>
 
-      <Card marginTop='mt-6'>
-        <Title>Country</Title>
-        <Subtitle>Count per country</Subtitle>
-        <BarChart
-          data={
-            data._facets['record.geo_coordinates.countryName']
-              ? data._facets['record.geo_coordinates.countryName']._counts
-              : []
-          }
-          dataKey='_value'
-          categories={['_count']}
-          colors={['rose']}
-          marginTop='mt-6'
-          yAxisWidth='w-12'
-        />
-      </Card>
-
-      <Table marginTop='mt-5'>
-        <TableHead>
-          <TableRow>
-            <TableHeaderCell>session_id</TableHeaderCell>
-            <TableHeaderCell>org_id</TableHeaderCell>
-            <TableHeaderCell>open</TableHeaderCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {data._hits.map((item, index) => (
-            <TableRow key={index}>
-              <TableCell>{item._document.session_id}</TableCell>
-
-              <TableCell>
-                <Text>{item._document.org_id}</Text>
-              </TableCell>
-
-              {/* <TableCell>
-                <Text>{JSON.stringify(item._document, null, 2)}</Text>
-              </TableCell> */}
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          <div className='rounded-2xl'>
+            <DataTable
+              className='mt-6 border-2 border-slate-110'
+              columns={columns}
+              data={data._hits}
+              expandableRows
+              expandableRowsComponent={ExpandedComponent}
+            />
+          </div>
+        </Col>
+      </ColGrid>
     </>
   );
 }
