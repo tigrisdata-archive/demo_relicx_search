@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { Order } from '@tigrisdata/core';
+import { LogicalOperator, Order, SelectorFilterOperator } from '@tigrisdata/core';
 import { SearchQuery, SearchResult } from '@tigrisdata/core/dist/search';
 import searchClient from '../../../lib/tigris';
 import { Session, SESSION_INDEX_NAME } from '../../../search/models/session';
@@ -9,9 +9,9 @@ type Data = {
   error?: string;
 };
 
-// GET /api/items/search?q=searchQ&page=1&size=10&order=desc -- searches for items matching text `searchQ`
+// GET /api/items/search?q=searchQ&page=1&size=10&order=desc&dateStart=2023-02-13T00:00:00.000Z&dateEnd=2023-02-13T00:00:00.000Z -- searches for items matching text `searchQ`
 export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
-  const { q, page, size, order } = req.query;
+  const { q, page, size, order, dateStart, dateEnd } = req.query;
 
   if (q === undefined) {
     res.status(400).json({ error: 'No search query found in request' });
@@ -60,6 +60,26 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         },
       ],
       hitsPerPage: Number(size) || 10,
+      filter:
+        dateStart && dateEnd
+          ? {
+              op: LogicalOperator.AND,
+              selectorFilters: [
+                {
+                  op: SelectorFilterOperator.GTE,
+                  fields: {
+                    created_at: dateStart.toString(),
+                  },
+                },
+                {
+                  op: SelectorFilterOperator.LTE,
+                  fields: {
+                    created_at: dateEnd.toString(),
+                  },
+                },
+              ],
+            }
+          : undefined,
     };
 
     index
