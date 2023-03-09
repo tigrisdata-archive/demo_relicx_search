@@ -17,6 +17,8 @@ import { IFacets, ISearchResult, IStatsEach } from './types';
 import { useMemo } from 'react';
 import DataTable, { TableColumn } from 'react-data-table-component';
 import moment from 'moment';
+import 'react-tooltip/dist/react-tooltip.css';
+import MapChartWithToolTip from './MapChartWithToolTip';
 
 type Props = {
   data: ISearchResult;
@@ -174,7 +176,7 @@ export default function Results({ data }: Props) {
         <Col numColSpan={6}>
           <ColGrid numCols={4} gapX='gap-x-6' gapY='gap-y-6'>
             <Col numColSpan={1}>
-              <Card hFull={true} decoration='top' decorationColor={'stone'}>
+              <Card decoration='top' decorationColor={'stone'}>
                 <Title>Vendor</Title>
                 <DonutChart
                   data={data._facets['record.vendor'] ? data._facets['record.vendor']._counts : []}
@@ -185,12 +187,34 @@ export default function Results({ data }: Props) {
                   colors={['slate', 'violet', 'indigo', 'rose', 'cyan', 'amber']}
                 />
               </Card>
+              <Card decoration='top' decorationColor={'rose'} marginTop='mt-4'>
+                <Title>Platform</Title>
+                <DonutChart
+                  data={data._facets['record.platform'] ? data._facets['record.platform']._counts : []}
+                  category='_count'
+                  dataKey='_value'
+                  marginTop='mt-0'
+                  valueFormatter={valueFormatter}
+                  colors={['slate', 'violet', 'indigo', 'rose', 'cyan', 'amber']}
+                />
+              </Card>
             </Col>
             <Col numColSpan={1}>
-              <Card decoration='top' decorationColor={'amber'} hFull={true}>
-                <Title>Device</Title>
+              <Card decoration='top' decorationColor={'amber'}>
+                <Title>Browser</Title>
                 <DonutChart
-                  data={data._facets['record.device'] ? data._facets['record.device']._counts : []}
+                  data={data._facets['record.browser'] ? data._facets['record.browser']._counts : []}
+                  category='_count'
+                  dataKey='_value'
+                  marginTop='mt-0'
+                  valueFormatter={valueFormatter}
+                  colors={['slate', 'violet', 'indigo', 'rose', 'cyan', 'amber']}
+                />
+              </Card>
+              <Card decoration='top' decorationColor={'cyan'} marginTop='mt-4'>
+                <Title>Language</Title>
+                <DonutChart
+                  data={data._facets['record.language'] ? data._facets['record.language']._counts : []}
                   category='_count'
                   dataKey='_value'
                   marginTop='mt-0'
@@ -201,22 +225,7 @@ export default function Results({ data }: Props) {
             </Col>
 
             <Col numColSpan={2}>
-              <Card marginTop='mt-0'>
-                <Title>Country</Title>
-                <Subtitle>Count per country</Subtitle>
-                <BarChart
-                  data={
-                    data._facets['record.geo_coordinates.countryName']
-                      ? data._facets['record.geo_coordinates.countryName']._counts
-                      : []
-                  }
-                  dataKey='_value'
-                  categories={['_count']}
-                  colors={['rose']}
-                  marginTop='mt-6'
-                  yAxisWidth='w-12'
-                />
-              </Card>
+              <MapChartWithToolTip data={data._facets['record.geo_coordinates.countryName']}></MapChartWithToolTip>
             </Col>
           </ColGrid>
 
