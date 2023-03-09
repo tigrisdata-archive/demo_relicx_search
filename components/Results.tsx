@@ -16,6 +16,7 @@ import {
 import { IFacets, ISearchResult, IStatsEach } from './types';
 import { useMemo } from 'react';
 import DataTable, { TableColumn } from 'react-data-table-component';
+import moment from 'moment';
 
 type Props = {
   data: ISearchResult;
@@ -43,7 +44,11 @@ type EachRow = {
 const columns: TableColumn<EachRow>[] = [
   {
     name: 'timestamp',
-    selector: (row: EachRow) => row._document.record['timestamp'],
+    selector: (row: EachRow) => {
+      let dateUnix = row._document.record['timestamp'];
+      dateUnix = dateUnix.substring(0, dateUnix.length - 3);
+      return `${moment(Number(dateUnix)).format('yyyy-MM-DDTHH:mm:ss.SSSZ')}`;
+    },
   },
   {
     name: 'session_id',
