@@ -68,13 +68,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
                 {
                   op: SelectorFilterOperator.GTE,
                   fields: {
-                    created_at: dateStart.toString(),
+                    created_at: new Date(dateStart.toString()),
                   },
                 },
                 {
                   op: SelectorFilterOperator.LTE,
                   fields: {
-                    created_at: dateEnd.toString(),
+                    created_at: new Date(dateEnd.toString()),
                   },
                 },
               ],
