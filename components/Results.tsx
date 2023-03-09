@@ -45,13 +45,23 @@ type EachRow = {
 };
 const columns: TableColumn<EachRow>[] = [
   {
+    name: 'created_at',
+    selector: (row: EachRow) => {
+      return `${moment(row._document['created_at']).utc().format('yyyy-MM-DDTHH:mm:ss.SSSZ')}`;
+
+      return row._document['created_at'];
+    },
+  },
+
+  {
     name: 'timestamp',
     selector: (row: EachRow) => {
       let dateUnix = row._document.record['timestamp'];
       dateUnix = dateUnix.substring(0, dateUnix.length - 3);
-      return `${moment(Number(dateUnix)).format('yyyy-MM-DDTHH:mm:ss.SSSZ')}`;
+      return `${moment(Number(dateUnix)).utc().format('yyyy-MM-DDTHH:mm:ss.SSSZ')}`;
     },
   },
+
   {
     name: 'session_id',
     selector: (row: EachRow) => row._document.record['session_id'],

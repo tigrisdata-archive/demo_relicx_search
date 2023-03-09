@@ -1,10 +1,6 @@
-import {
-  SearchField,
-  TigrisDataTypes,
-  TigrisSearchIndex,
-} from "@tigrisdata/core";
+import { SearchField, TigrisDataTypes, TigrisSearchIndex } from '@tigrisdata/core';
 
-export const SESSION_INDEX_NAME = "session";
+export const SESSION_INDEX_NAME = 'session';
 
 export class GeoCoordinates {
   @SearchField({ facet: true })
@@ -73,10 +69,10 @@ export class Record {
 @TigrisSearchIndex(SESSION_INDEX_NAME)
 export class Session {
   @SearchField({ sort: true })
-  created_at?: Date;
+  created_at?: Date | string;
 
   @SearchField({ sort: true })
-  updated_at?: Date;
+  updated_at?: Date | string;
 
   @SearchField()
   record?: Record;
