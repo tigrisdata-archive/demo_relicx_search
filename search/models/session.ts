@@ -69,10 +69,10 @@ export class Record {
 @TigrisSearchIndex(SESSION_INDEX_NAME)
 export class Session {
   @SearchField({ sort: true })
-  created_at?: Date | string;
+  created_at?: Date;
 
   @SearchField({ sort: true })
-  updated_at?: Date | string;
+  updated_at?: Date;
 
   @SearchField()
   record?: Record;
