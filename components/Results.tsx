@@ -47,9 +47,7 @@ const columns: TableColumn<EachRow>[] = [
   {
     name: 'created_at',
     selector: (row: EachRow) => {
-      return `${moment(row._document['created_at']).utc().format('yyyy-MM-DDTHH:mm:ss.SSSZ')}`;
-
-      return row._document['created_at'];
+      return `${moment(row._document['created_at']).utc().format('MMMM Do YYYY, h:mm:ss a')}`;
     },
   },
 

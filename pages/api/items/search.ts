@@ -9,7 +9,7 @@ type Data = {
   error?: string;
 };
 
-// GET /api/items/search?q=searchQ&page=1&size=10&order=desc&dateStart=2023-02-13T00:00:00.000Z&dateEnd=2023-02-13T00:00:00.000Z -- searches for items matching text `searchQ`
+// GET /api/items/search?q=searchQ&page=1&size=10&order=desc&dateStart=2023-02-10T00:00:00.000Z&dateEnd=2023-02-13T00:00:00.000Z -- searches for items matching text `searchQ`
 export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
   const { q, page, size, order, dateStart, dateEnd } = req.query;
 
