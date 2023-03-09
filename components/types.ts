@@ -38,7 +38,7 @@ export type IFacets = {
   [k in string]: IFacetEach;
 };
 
-type IFacetEach = {
+export type IFacetEach = {
   _counts: {
     _count: number;
     _value: string;
