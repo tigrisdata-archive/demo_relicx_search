@@ -3,6 +3,8 @@ export type SearchStateType = {
   page: number;
   size: number;
   order: 'asc' | 'desc';
+  dateStart?: string;
+  dateEnd?: string;
 };
 
 export type ResultDataType = {
