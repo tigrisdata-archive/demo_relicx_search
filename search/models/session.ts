@@ -1,10 +1,6 @@
-import {
-  SearchField,
-  TigrisDataTypes,
-  TigrisSearchIndex,
-} from "@tigrisdata/core";
+import { SearchField, TigrisDataTypes, TigrisSearchIndex } from '@tigrisdata/core';
 
-export const SESSION_INDEX_NAME = "session";
+export const SESSION_INDEX_NAME = 'session';
 
 export class GeoCoordinates {
   @SearchField({ facet: true })
