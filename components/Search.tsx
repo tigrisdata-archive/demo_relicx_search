@@ -54,19 +54,41 @@ export default function Search() {
   return (
     <main className='bg-slate-50 p-6 sm:p-10'>
       <Title>Dashboard</Title>
+      <QueryDateSelector
+        query={searchedState.query}
+        queryUpdated={(q: string) => {
+          setSearchedState(state => ({ ...state, query: q }));
+        }}
+        dateUpdated={(d: (Date | undefined)[]) => {
+          if (d[0]) {
+            const day = d[0];
+            const momentDateStart = moment(day);
+            const momentDateEnd = momentDateStart.clone();
+            momentDateEnd.add(1, 'days').subtract(1, 'ms');
+
+            setSearchedState(state => ({
+              ...state,
+              dateStart: momentDateStart.format('yyyy-MM-DDTHH:mm:ss.SSS') + 'Z',
+              dateEnd: momentDateEnd.format('yyyy-MM-DDTHH:mm:ss.SSS') + 'Z',
+            }));
+          }
+          if (d[1]) {
+            const day = d[1];
+            const momentDateEnd = moment(day);
+            const momentDateStart = moment(d[0]);
+            if (momentDateStart.isSame(momentDateEnd)) {
+              momentDateEnd.add(1, 'days').subtract(1, 'ms');
+            }
+            setSearchedState(state => ({ ...state, dateEnd: momentDateEnd.format('yyyy-MM-DDTHH:mm:ss.SSS') + 'Z' }));
+          }
+        }}></QueryDateSelector>
 
       <TabList defaultValue={1} onValueChange={value => setSelectedView(value)} marginTop='mt-6'>
         <Tab value={1} text='Overview' />
         <Tab value={2} text='Detail' />
       </TabList>
 
-      {selectedView === 1 ? (
-        <>
-          <Results data={resultData.result}></Results>
-        </>
-      ) : (
-        <SampleDetail></SampleDetail>
-      )}
+      {selectedView === 1 ? <>Result page </> : <SampleDetail></SampleDetail>}
     </main>
   );
 }
