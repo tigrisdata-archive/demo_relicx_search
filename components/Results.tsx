@@ -232,12 +232,18 @@ export default function Results({ data }: Props) {
               </Card>
             </Col>
 
-            <Col numColSpan={2}>
-              <MapChartWithToolTip data={data._facets['record.geo_coordinates.countryName']}></MapChartWithToolTip>
-            </Col>
+            <Col numColSpan={2}>map</Col>
           </ColGrid>
 
-          <div className='rounded-2xl'></div>
+          <div className='rounded-2xl'>
+            <DataTable
+              className='mt-6 border-2 border-slate-110'
+              columns={columns}
+              data={data._hits}
+              expandableRows
+              expandableRowsComponent={ExpandedComponent}
+            />
+          </div>
         </Col>
       </ColGrid>
     </>
