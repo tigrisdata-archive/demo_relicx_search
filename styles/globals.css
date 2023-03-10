@@ -12,3 +12,25 @@ body {
   font-family: 'Rubik', sans-serif;
   color: #000000;
 }
+
+.paginator {
+  margin-top: 20px;
+}
+
+.paginator li {
+  display: inline-block;
+  padding: 5px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.paginator li.active {
+  font-weight: 600;
+}
+
+.paginator li.arrow-prev {
+  transform: rotate(-90deg);
+}
+.paginator li.arrow-next {
+  transform: rotate(90deg);
+}

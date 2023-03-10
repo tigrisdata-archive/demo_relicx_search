@@ -1,9 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Tab, TabList, Title } from '@tremor/react';
+import { Title } from '@tremor/react';
 import { ISearchResponse, ISearchResult, ResultDataType, SearchStateType } from './types';
 import QueryDateSelector from './QueryDateSelector';
 import Results from './Results';
-import SampleDetail from './SampleDetail';
 import moment from 'moment';
 
 const result: ISearchResult = {
@@ -13,8 +12,6 @@ const result: ISearchResult = {
 };
 
 export default function Search() {
-  const [selectedView, setSelectedView] = useState(1);
-
   const [searchedState, setSearchedState] = useState<SearchStateType>({
     query: '',
     page: 1,
@@ -83,18 +80,7 @@ export default function Search() {
           }
         }}></QueryDateSelector>
 
-      <TabList defaultValue={1} onValueChange={value => setSelectedView(value)} marginTop='mt-6'>
-        <Tab value={1} text='Overview' />
-        <Tab value={2} text='Detail' />
-      </TabList>
-
-      {selectedView === 1 ? (
-        <>
-          <Results data={resultData.result}></Results>
-        </>
-      ) : (
-        <SampleDetail></SampleDetail>
-      )}
+      <Results data={resultData.result} setSearchedState={setSearchedState}></Results>
     </main>
   );
 }
