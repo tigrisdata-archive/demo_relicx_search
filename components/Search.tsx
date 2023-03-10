@@ -54,6 +54,19 @@ export default function Search() {
   return (
     <main className='bg-slate-50 p-6 sm:p-10'>
       <Title>Dashboard</Title>
+
+      <TabList defaultValue={1} onValueChange={value => setSelectedView(value)} marginTop='mt-6'>
+        <Tab value={1} text='Overview' />
+        <Tab value={2} text='Detail' />
+      </TabList>
+
+      {selectedView === 1 ? (
+        <>
+          <Results data={resultData.result}></Results>
+        </>
+      ) : (
+        <SampleDetail></SampleDetail>
+      )}
     </main>
   );
 }
