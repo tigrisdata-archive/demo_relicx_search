@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Title } from '@tremor/react';
+import { Title, Text } from '@tremor/react';
 import { ISearchResponse, ISearchResult, ResultDataType, SearchStateType } from './types';
 import QueryDateSelector from './QueryDateSelector';
 import Results from './Results';
@@ -42,13 +42,30 @@ export default function Search() {
   useEffect(() => {
     async function getData() {
       setResultData(state => ({ ...state, loading: true }));
+
       const URL = `/api/items/search?q=${searchedState.query}&page=${searchedState.page}&size=${searchedState.size}&order=${searchedState.order}${getStartAndEndDates}`;
-      const response = await fetch(URL);
-      const actualData: ISearchResponse = await response.json();
-      if (actualData.result) {
-        setResultData({ result: actualData.result, loading: false });
-      } else {
-        setResultData({ result, loading: false, error: actualData.error ? actualData.error : `Something went wrong!` });
+
+      try {
+        const response = await fetch(URL);
+        if (response.ok) {
+          const actualData: ISearchResponse = await response.json();
+          if (actualData.result) {
+            setResultData({ result: actualData.result, loading: false });
+          } else {
+            throw new Error('No results..');
+          }
+        } else {
+          throw new Error('Incorrect Status');
+        }
+      } catch (error) {
+        let message = 'Unknown Error';
+        if (error instanceof Error) message = error.message;
+
+        setResultData({
+          result,
+          loading: false,
+          error: `Something went wrong! ${message}`,
+        });
       }
     }
 
@@ -64,7 +81,14 @@ export default function Search() {
 
   return (
     <main className='relative bg-slate-50 p-6 sm:p-10'>
-      <Title>Dashboard</Title>
+      <div className='flex flex-row items-center justify-between'>
+        <Title>Dashboard</Title>
+
+        <Text color='rose' textAlignment='text-left' truncate={false} height='' marginTop='mt-0'>
+          {resultData.error}
+        </Text>
+      </div>
+
       <QueryDateSelector
         query={searchedState.query}
         queryUpdated={(q: string) => {
@@ -76,7 +100,6 @@ export default function Search() {
             const momentDateStart = moment(day);
             const momentDateEnd = momentDateStart.clone();
             momentDateEnd.add(1, 'days').subtract(1, 'ms');
-            ref.current = 0;
 
             setSearchedState(state => ({
               ...state,
@@ -92,7 +115,6 @@ export default function Search() {
             if (momentDateStart.isSame(momentDateEnd)) {
               momentDateEnd.add(1, 'days').subtract(1, 'ms');
             }
-            ref.current = 0;
 
             setSearchedState(state => ({
               ...state,
