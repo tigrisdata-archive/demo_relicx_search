@@ -11,8 +11,13 @@ const MapChartWithToolTip = ({ data }: Props) => {
 
   return (
     <Card marginTop='mt-0' hFull={true}>
-      <MapChart resultForMap={data} setTooltipContent={setTooltipContent}></MapChart>
-
+      {/* <MapChart resultForMap={data} setTooltipContent={setTooltipContent}></MapChart> */}
+      <a className='rsm-geography' data-tooltip-content='Hello world!'>
+        ◕‿‿◕
+      </a>
+      <a className='rsm-geography' data-tooltip-content='Hello to you too!'>
+        ◕‿‿◕
+      </a>{' '}
       <Tooltip
         anchorSelect='.rsm-geography'
         place='top'

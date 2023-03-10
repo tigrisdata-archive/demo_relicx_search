@@ -232,7 +232,9 @@ export default function Results({ data }: Props) {
               </Card>
             </Col>
 
-            <Col numColSpan={2}>map</Col>
+            <Col numColSpan={2}>
+              <MapChartWithToolTip data={data._facets['record.geo_coordinates.countryName']}></MapChartWithToolTip>
+            </Col>
           </ColGrid>
 
           <div className='rounded-2xl'>
