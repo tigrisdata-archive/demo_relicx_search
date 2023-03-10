@@ -45,7 +45,13 @@ export default function Search() {
         setResultData({ result, loading: false, error: actualData.error ? actualData.error : `Something went wrong!` });
       }
     }
-    getData();
+    const timer = setTimeout(() => {
+      getData();
+    }, 1000);
+
+    return () => {
+      clearTimeout(timer);
+    };
   }, [getStartAndEndDates, searchedState.order, searchedState.page, searchedState.query, searchedState.size]);
 
   return (
