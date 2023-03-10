@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import React from 'react';
 import { ComposableMap, Geographies, Geography, ZoomableGroup } from 'react-simple-maps';
 import { IFacetEach } from './types';
 
@@ -42,4 +42,4 @@ const MapChart = ({ resultForMap, setTooltipContent }: Props) => {
   );
 };
 
-export default memo(MapChart);
+export default React.memo(MapChart);
