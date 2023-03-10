@@ -48,7 +48,7 @@ export default function Search() {
         setResultData({ result, loading: false, error: actualData.error ? actualData.error : `Something went wrong!` });
       }
     }
-    getData();
+    // getData();
   }, [getStartAndEndDates, searchedState.order, searchedState.page, searchedState.query, searchedState.size]);
 
   return (
