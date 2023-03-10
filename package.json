@@ -24,6 +24,7 @@
     "react-data-table-component": "^7.5.3",
     "react-dom": "^18.2.0",
     "react-simple-maps": "^3.0.0",
+    "react-spinners": "^0.13.8",
     "react-tooltip": "^5.9.1",
     "reflect-metadata": "^0.1.13",
     "stream-json": "^1.7.5"
