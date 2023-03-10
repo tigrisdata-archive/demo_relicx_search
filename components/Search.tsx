@@ -4,6 +4,7 @@ import { ISearchResponse, ISearchResult, ResultDataType, SearchStateType } from 
 import QueryDateSelector from './QueryDateSelector';
 import Results from './Results';
 import moment from 'moment';
+import BarLoader from 'react-spinners/BarLoader';
 
 const result: ISearchResult = {
   _hits: [],
@@ -36,6 +37,7 @@ export default function Search() {
 
   useEffect(() => {
     async function getData() {
+      setResultData(state => ({ ...state, loading: true }));
       const URL = `/api/items/search?q=${searchedState.query}&page=${searchedState.page}&size=${searchedState.size}&order=${searchedState.order}${getStartAndEndDates}`;
       const response = await fetch(URL);
       const actualData: ISearchResponse = await response.json();
@@ -47,7 +49,7 @@ export default function Search() {
     }
     const timer = setTimeout(() => {
       getData();
-    }, 1000);
+    }, 650);
 
     return () => {
       clearTimeout(timer);
@@ -55,12 +57,13 @@ export default function Search() {
   }, [getStartAndEndDates, searchedState.order, searchedState.page, searchedState.query, searchedState.size]);
 
   return (
-    <main className='bg-slate-50 p-6 sm:p-10'>
+    <main className='relative bg-slate-50 p-6 sm:p-10'>
       <Title>Dashboard</Title>
+
       <QueryDateSelector
         query={searchedState.query}
         queryUpdated={(q: string) => {
-          setSearchedState(state => ({ ...state, query: q }));
+          setSearchedState(state => ({ ...state, query: q, page: 1 }));
         }}
         dateUpdated={(d: (Date | undefined)[]) => {
           if (d[0]) {
@@ -73,6 +76,7 @@ export default function Search() {
               ...state,
               dateStart: momentDateStart.format('yyyy-MM-DDTHH:mm:ss.SSS') + 'Z',
               dateEnd: momentDateEnd.format('yyyy-MM-DDTHH:mm:ss.SSS') + 'Z',
+              page: 1,
             }));
           }
           if (d[1]) {
@@ -82,9 +86,17 @@ export default function Search() {
             if (momentDateStart.isSame(momentDateEnd)) {
               momentDateEnd.add(1, 'days').subtract(1, 'ms');
             }
-            setSearchedState(state => ({ ...state, dateEnd: momentDateEnd.format('yyyy-MM-DDTHH:mm:ss.SSS') + 'Z' }));
+            setSearchedState(state => ({
+              ...state,
+              dateEnd: momentDateEnd.format('yyyy-MM-DDTHH:mm:ss.SSS') + 'Z',
+              page: 1,
+            }));
           }
         }}></QueryDateSelector>
+
+      <div className='relative mt-3 h-2'>
+        <BarLoader color='#36d7b7' loading={resultData.loading} width={'100%'} className=' rounded' />
+      </div>
 
       <Results data={resultData.result} setSearchedState={setSearchedState}></Results>
     </main>

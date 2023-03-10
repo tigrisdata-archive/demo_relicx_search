@@ -49,7 +49,7 @@ export default function Results({ data, setSearchedState }: Props) {
 
   return (
     <>
-      <ColGrid numCols={8} gapX='gap-x-6' gapY='gap-y-6' marginTop='mt-8'>
+      <ColGrid numCols={8} gapX='gap-x-6' gapY='gap-y-6' marginTop='mt-6'>
         <Col numColSpan={2}>
           <Card marginTop='mt-0' decoration='top' decorationColor={'indigo'}>
             <Text> Total results </Text>
@@ -58,7 +58,7 @@ export default function Results({ data, setSearchedState }: Props) {
           </Card>
 
           <Card marginTop='mt-4'>
-            <Title>Browser</Title>
+            <Title>City</Title>
             <Flex marginTop='mt-4'>
               <Text>
                 <Bold>Source</Bold>
