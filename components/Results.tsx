@@ -20,7 +20,8 @@ import { DataTablePagination } from './DataTablePagination';
 
 type Props = {
   data: ISearchResult;
-  setSearchedState?: Function;
+  updatePageTo?: Function;
+  className?: string;
 };
 
 const MapDataForBarlistFromAFacet = (facetKey: string, facet: IFacets) => {
@@ -38,7 +39,7 @@ const MapDataForBarlistFromAFacet = (facetKey: string, facet: IFacets) => {
 
 const valueFormatter = (number: number) => `Count ${number.toString()}`;
 
-export default function Results({ data, setSearchedState }: Props) {
+export default function Results({ data, updatePageTo, className }: Props) {
   const browserBarListData = useMemo(() => {
     return MapDataForBarlistFromAFacet('record.geo_coordinates.city', data._facets);
   }, [data._facets]);
@@ -48,7 +49,7 @@ export default function Results({ data, setSearchedState }: Props) {
   }, [data._facets]);
 
   return (
-    <>
+    <div className={className}>
       <ColGrid numCols={8} gapX='gap-x-6' gapY='gap-y-6' marginTop='mt-6'>
         <Col numColSpan={2}>
           <Card marginTop='mt-0' decoration='top' decorationColor={'indigo'}>
@@ -155,9 +156,9 @@ export default function Results({ data, setSearchedState }: Props) {
             </Col>
           </ColGrid>
 
-          <DataTablePagination data={data} setSearchedState={setSearchedState}></DataTablePagination>
+          <DataTablePagination data={data} updatePageTo={updatePageTo}></DataTablePagination>
         </Col>
       </ColGrid>
-    </>
+    </div>
   );
 }

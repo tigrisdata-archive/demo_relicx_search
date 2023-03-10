@@ -22,10 +22,12 @@ body {
   padding: 5px;
   cursor: pointer;
   user-select: none;
+  color: #64748b;
 }
 
 .paginator li.active {
   font-weight: 600;
+  color: #06b6d4;
 }
 
 .paginator li.arrow-prev {

@@ -1,13 +1,8 @@
 import DataTable, { TableColumn } from 'react-data-table-component';
 import moment from 'moment';
-import { ISearchResult } from './types';
+import { EachRow, ISearchResult } from './types';
 import Paginator from './Paginator';
 import { pagination } from './utils';
-
-type EachRow = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  _document: { [key: string]: any };
-};
 
 const columns: TableColumn<EachRow>[] = [
   {
@@ -52,8 +47,7 @@ const columns: TableColumn<EachRow>[] = [
   },
 ];
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const ExpandedComponent = ({ data }: any) => {
+const ExpandedComponent = ({ data }: { data: EachRow }) => {
   return (
     <>
       <pre className='text-xs leading-tight p-6'>{JSON.stringify(data, null, 2)}</pre>
@@ -62,32 +56,30 @@ const ExpandedComponent = ({ data }: any) => {
 };
 type Props = {
   data: ISearchResult;
-  setSearchedState?: Function;
+  updatePageTo?: Function;
 };
 
-export const DataTablePagination = ({ data, setSearchedState }: Props) => {
+export const DataTablePagination = ({ data, updatePageTo }: Props) => {
   const pages = pagination(data._meta._page._current, data._meta._totalPages);
 
   return (
-    <div className='rounded-2xl'>
-      <DataTable
-        className='mt-6 border-2 border-slate-110'
-        columns={columns}
-        data={data._hits}
-        expandableRows
-        expandableRowsComponent={ExpandedComponent}
-      />
-
+    <div className='rounded-2xl '>
       <Paginator
         dataToMap={pages}
         updateCurrentPageTo={(pageTo: number) => {
           if (pageTo > data._meta._totalPages || pageTo < 1) {
             return;
           }
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          setSearchedState && setSearchedState((state: any) => ({ ...state, page: pageTo }));
+          updatePageTo && updatePageTo(pageTo);
         }}
         currentPage={data._meta._page._current}
+      />
+      <DataTable
+        className='mt-4 border-2 border-slate-110'
+        columns={columns}
+        data={data._hits}
+        expandableRows
+        expandableRowsComponent={ExpandedComponent}
       />
     </div>
   );

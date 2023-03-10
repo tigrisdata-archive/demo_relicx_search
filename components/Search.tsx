@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Title } from '@tremor/react';
 import { ISearchResponse, ISearchResult, ResultDataType, SearchStateType } from './types';
 import QueryDateSelector from './QueryDateSelector';
@@ -12,7 +12,11 @@ const result: ISearchResult = {
   _meta: { _found: 0, _totalPages: 0, _page: { _current: 0, _size: 0 } },
 };
 
+const RelaxTrigger = 650;
+
 export default function Search() {
+  const ref = useRef<number>(RelaxTrigger);
+
   const [searchedState, setSearchedState] = useState<SearchStateType>({
     query: '',
     page: 1,
@@ -47,9 +51,11 @@ export default function Search() {
         setResultData({ result, loading: false, error: actualData.error ? actualData.error : `Something went wrong!` });
       }
     }
+
     const timer = setTimeout(() => {
       getData();
-    }, 650);
+      ref.current = RelaxTrigger;
+    }, ref.current);
 
     return () => {
       clearTimeout(timer);
@@ -59,7 +65,6 @@ export default function Search() {
   return (
     <main className='relative bg-slate-50 p-6 sm:p-10'>
       <Title>Dashboard</Title>
-
       <QueryDateSelector
         query={searchedState.query}
         queryUpdated={(q: string) => {
@@ -71,6 +76,7 @@ export default function Search() {
             const momentDateStart = moment(day);
             const momentDateEnd = momentDateStart.clone();
             momentDateEnd.add(1, 'days').subtract(1, 'ms');
+            ref.current = 0;
 
             setSearchedState(state => ({
               ...state,
@@ -86,6 +92,8 @@ export default function Search() {
             if (momentDateStart.isSame(momentDateEnd)) {
               momentDateEnd.add(1, 'days').subtract(1, 'ms');
             }
+            ref.current = 0;
+
             setSearchedState(state => ({
               ...state,
               dateEnd: momentDateEnd.format('yyyy-MM-DDTHH:mm:ss.SSS') + 'Z',
@@ -98,7 +106,16 @@ export default function Search() {
         <BarLoader color='#36d7b7' loading={resultData.loading} width={'100%'} className=' rounded' />
       </div>
 
-      <Results data={resultData.result} setSearchedState={setSearchedState}></Results>
+      <Results
+        className={resultData.loading ? 'blur-[2px] pointer-events-none opacity-50 duration-300' : 'duration-1000'}
+        data={resultData.result}
+        updatePageTo={(pageTo: number) => {
+          ref.current = 0;
+          setSearchedState(state => ({
+            ...state,
+            page: pageTo,
+          }));
+        }}></Results>
     </main>
   );
 }

@@ -4,7 +4,7 @@ import Image from 'next/image';
 type Props = { updateCurrentPageTo: Function; currentPage: number; dataToMap: (string | number)[] };
 
 const Paginator = ({ updateCurrentPageTo, currentPage, dataToMap }: Props) => (
-  <div>
+  <div className='mt-3 flex flex-row-reverse'>
     <ul className='flex flex-row paginator'>
       <li
         onClick={e => {
