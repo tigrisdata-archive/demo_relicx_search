@@ -88,7 +88,13 @@ export default function Search() {
         <Tab value={2} text='Detail' />
       </TabList>
 
-      {selectedView === 1 ? <>Result page </> : <SampleDetail></SampleDetail>}
+      {selectedView === 1 ? (
+        <>
+          <Results data={resultData.result}></Results>
+        </>
+      ) : (
+        <SampleDetail></SampleDetail>
+      )}
     </main>
   );
 }

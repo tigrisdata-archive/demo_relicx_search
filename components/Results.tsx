@@ -237,15 +237,7 @@ export default function Results({ data }: Props) {
             </Col>
           </ColGrid>
 
-          <div className='rounded-2xl'>
-            <DataTable
-              className='mt-6 border-2 border-slate-110'
-              columns={columns}
-              data={data._hits}
-              expandableRows
-              expandableRowsComponent={ExpandedComponent}
-            />
-          </div>
+          <div className='rounded-2xl'></div>
         </Col>
       </ColGrid>
     </>
