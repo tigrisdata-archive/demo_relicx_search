@@ -9,7 +9,6 @@
     "seed": "npx ts-node scripts/seed.ts",
     "start": "next start",
     "lint": "next lint",
-    "predev": "npm run setup",
     "dev": "next dev"
   },
   "dependencies": {
