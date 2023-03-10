@@ -18,13 +18,12 @@ export type ISearchResponse = {
   error: string;
 };
 
+export type EachRow = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  _document: { [key: string]: any };
+};
 export type ISearchResult = {
-  _hits: {
-    _document: {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      [K in string]: any;
-    };
-  }[];
+  _hits: EachRow[];
   _facets: IFacets;
   _meta: {
     _found: number;
