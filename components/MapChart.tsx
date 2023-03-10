@@ -4,7 +4,7 @@ import { IFacetEach } from './types';
 
 type Props = {
   resultForMap: IFacetEach | undefined;
-  setTooltipContent: Function;
+  setTooltipContent?: Function;
 };
 const MapChart = ({ resultForMap, setTooltipContent }: Props) => {
   return (
@@ -20,10 +20,10 @@ const MapChart = ({ resultForMap, setTooltipContent }: Props) => {
                   return (
                     <Geography
                       onMouseEnter={() => {
-                        setTooltipContent(`${geo.properties.name} ${d ? d._count : ''}`);
+                        setTooltipContent && setTooltipContent(`${geo.properties.name} ${d ? d._count : ''}`);
                       }}
                       onMouseLeave={() => {
-                        setTooltipContent(``);
+                        setTooltipContent && setTooltipContent(``);
                       }}
                       key={geo.rsmKey}
                       geography={geo}
