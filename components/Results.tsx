@@ -7,7 +7,6 @@ import {
   Metric,
   Bold,
   BarList,
-  Legend,
   DonutChart,
   BarChart,
   ColGrid,
@@ -15,13 +14,13 @@ import {
 } from '@tremor/react';
 import { IFacets, ISearchResult, IStatsEach } from './types';
 import { useMemo } from 'react';
-import DataTable, { TableColumn } from 'react-data-table-component';
-import moment from 'moment';
 import 'react-tooltip/dist/react-tooltip.css';
 import MapChartWithToolTip from './MapChartWithToolTip';
+import { DataTablePagination } from './DataTablePagination';
 
 type Props = {
   data: ISearchResult;
+  setSearchedState?: Function;
 };
 
 const MapDataForBarlistFromAFacet = (facetKey: string, facet: IFacets) => {
@@ -39,68 +38,7 @@ const MapDataForBarlistFromAFacet = (facetKey: string, facet: IFacets) => {
 
 const valueFormatter = (number: number) => `Count ${number.toString()}`;
 
-type EachRow = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  _document: { [key: string]: any };
-};
-const columns: TableColumn<EachRow>[] = [
-  {
-    name: 'created_at',
-    selector: (row: EachRow) => {
-      return `${moment(row._document['created_at']).utc().format('MMMM Do YYYY, h:mm:ss a')}`;
-    },
-  },
-
-  {
-    name: 'timestamp',
-    selector: (row: EachRow) => {
-      let dateUnix = row._document.record['timestamp'];
-      dateUnix = dateUnix.substring(0, dateUnix.length - 3);
-      return `${moment(Number(dateUnix)).utc().format('yyyy-MM-DDTHH:mm:ss.SSSZ')}`;
-    },
-  },
-
-  {
-    name: 'session_id',
-    selector: (row: EachRow) => row._document.record['session_id'],
-  },
-
-  {
-    name: 'entry_url',
-    selector: (row: EachRow) => row._document.record['entry_url'],
-  },
-  {
-    name: 'origin',
-    selector: (row: EachRow) => row._document.record['origin'],
-  },
-  {
-    name: 'browser',
-    selector: (row: EachRow) => row._document.record['browser'],
-  },
-  {
-    name: 'vendor',
-    selector: (row: EachRow) => row._document.record['vendor'],
-  },
-  {
-    name: 'hostname',
-    selector: (row: EachRow) => row._document.record['hostname'],
-  },
-  {
-    name: 'user_agent',
-    selector: (row: EachRow) => row._document.record['user_agent'],
-  },
-];
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const ExpandedComponent = ({ data }: any) => {
-  return (
-    <>
-      <pre className='text-xs leading-tight p-6'>{JSON.stringify(data, null, 2)}</pre>
-    </>
-  );
-};
-
-export default function Results({ data }: Props) {
+export default function Results({ data, setSearchedState }: Props) {
   const browserBarListData = useMemo(() => {
     return MapDataForBarlistFromAFacet('record.geo_coordinates.city', data._facets);
   }, [data._facets]);
@@ -111,7 +49,7 @@ export default function Results({ data }: Props) {
 
   return (
     <>
-      <ColGrid numCols={8} gapX='gap-x-6' gapY='gap-y-6' marginTop='mt-4'>
+      <ColGrid numCols={8} gapX='gap-x-6' gapY='gap-y-6' marginTop='mt-8'>
         <Col numColSpan={2}>
           <Card marginTop='mt-0' decoration='top' decorationColor={'indigo'}>
             <Text> Total results </Text>
@@ -130,16 +68,6 @@ export default function Results({ data }: Props) {
               </Text>
             </Flex>
             <BarList data={browserBarListData.counts} marginTop='mt-2' />
-            <Legend
-              categories={[
-                `Count ${browserBarListData.stats._count}`,
-                `Max ${browserBarListData.stats._max}`,
-                `Min ${browserBarListData.stats._min}`,
-                `Sum ${browserBarListData.stats._sum}`,
-              ]}
-              colors={['emerald', 'red', 'orange', 'teal', 'fuchsia']}
-              marginTop='mt-3'
-            />
           </Card>
 
           <Card marginTop='mt-4'>
@@ -153,16 +81,6 @@ export default function Results({ data }: Props) {
               </Text>
             </Flex>
             <BarList data={platformBarListData.counts} marginTop='mt-2' />
-            <Legend
-              categories={[
-                `Count ${platformBarListData.stats._count}`,
-                `Max ${platformBarListData.stats._max}`,
-                `Min ${platformBarListData.stats._min}`,
-                `Sum ${platformBarListData.stats._sum}`,
-              ]}
-              colors={['emerald', 'red', 'orange', 'teal', 'fuchsia']}
-              marginTop='mt-3'
-            />
           </Card>
 
           <Card marginTop='mt-4'>
@@ -237,15 +155,7 @@ export default function Results({ data }: Props) {
             </Col>
           </ColGrid>
 
-          <div className='rounded-2xl'>
-            <DataTable
-              className='mt-6 border-2 border-slate-110'
-              columns={columns}
-              data={data._hits}
-              expandableRows
-              expandableRowsComponent={ExpandedComponent}
-            />
-          </div>
+          <DataTablePagination data={data} setSearchedState={setSearchedState}></DataTablePagination>
         </Col>
       </ColGrid>
     </>
