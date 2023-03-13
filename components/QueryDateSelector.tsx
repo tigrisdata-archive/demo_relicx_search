@@ -1,12 +1,23 @@
 import { ColGrid, Col, TextInput, DateRangePicker } from '@tremor/react';
+import DropDown from './DropDown';
 
 type Props = {
   query: string;
   queryUpdated: Function;
+  matchedFields?: string[];
+  searchedFields?: string[];
+  searchFieldUpdated: Function;
   dateUpdated: Function;
 };
 
-export default function QueryDateSelector({ query, queryUpdated, dateUpdated }: Props) {
+export default function QueryDateSelector({
+  query,
+  queryUpdated,
+  dateUpdated,
+  searchedFields,
+  matchedFields,
+  searchFieldUpdated,
+}: Props) {
   return (
     <ColGrid numCols={10} gapX='gap-x-5' marginTop='mt-6'>
       <Col numColSpan={7}>
@@ -18,6 +29,38 @@ export default function QueryDateSelector({ query, queryUpdated, dateUpdated }: 
             queryUpdated(e.target.value);
           }}
         />
+        {/* //Dropdown showing matched fields from response */}
+        <div className='relative'>
+          <DropDown
+            matchedFields={matchedFields}
+            searchFieldUpdated={searchFieldUpdated}
+            searchedFields={searchedFields}></DropDown>
+        </div>
+        {/* //List showing searchfields selected for the request */}
+        <div className='mt-1 text-sm' style={{ height: '20px' }}>
+          {searchedFields && (
+            <>
+              {searchedFields.map((each, index) => {
+                {
+                  return (
+                    <>
+                      <span key={index}>
+                        <label className='p-1 font-medium'>{each}</label>
+                      </span>
+                    </>
+                  );
+                }
+              })}
+              <span
+                className='pl-2'
+                onClick={() => {
+                  searchFieldUpdated('');
+                }}>
+                [clear all]
+              </span>
+            </>
+          )}
+        </div>
       </Col>
       <Col numColSpan={3}>
         <DateRangePicker

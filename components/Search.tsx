@@ -39,11 +39,20 @@ export default function Search() {
     }
   }, [searchedState.dateEnd, searchedState.dateStart]);
 
+  const getSearchedFields = useMemo(() => {
+    if (searchedState.searchedFields) {
+      const str = searchedState.searchedFields.join();
+      return `&searchFields=${str}`;
+    } else {
+      return '';
+    }
+  }, [searchedState.searchedFields]);
+
   useEffect(() => {
     async function getData() {
       setResultData(state => ({ ...state, loading: true }));
 
-      const URL = `/api/items/search?q=${searchedState.query}&page=${searchedState.page}&size=${searchedState.size}&order=${searchedState.order}${getStartAndEndDates}`;
+      const URL = `/api/items/search?q=${searchedState.query}&page=${searchedState.page}&size=${searchedState.size}&order=${searchedState.order}${getStartAndEndDates}${getSearchedFields}`;
 
       try {
         const response = await fetch(URL);
@@ -77,7 +86,14 @@ export default function Search() {
     return () => {
       clearTimeout(timer);
     };
-  }, [getStartAndEndDates, searchedState.order, searchedState.page, searchedState.query, searchedState.size]);
+  }, [
+    getStartAndEndDates,
+    searchedState.order,
+    searchedState.page,
+    searchedState.query,
+    searchedState.size,
+    getSearchedFields,
+  ]);
 
   return (
     <main className='relative bg-slate-50 p-6 sm:p-10'>
@@ -93,6 +109,11 @@ export default function Search() {
         query={searchedState.query}
         queryUpdated={(q: string) => {
           setSearchedState(state => ({ ...state, query: q, page: 1 }));
+        }}
+        matchedFields={resultData.result._meta._matchedFields}
+        searchedFields={searchedState.searchedFields}
+        searchFieldUpdated={(selected: string) => {
+          setSearchedState(state => ({ ...state, searchedFields: selected == '' ? undefined : [selected], page: 1 }));
         }}
         dateUpdated={(d: (Date | undefined)[]) => {
           if (d[0]) {
@@ -124,7 +145,7 @@ export default function Search() {
           }
         }}></QueryDateSelector>
 
-      <div className='relative mt-3 h-2'>
+      <div className='relative mt-1 h-2'>
         <BarLoader color='#36d7b7' loading={resultData.loading} width={'100%'} className=' rounded' />
       </div>
 
