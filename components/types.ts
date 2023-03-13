@@ -5,6 +5,7 @@ export type SearchStateType = {
   order: 'asc' | 'desc';
   dateStart?: string;
   dateEnd?: string;
+  searchedFields?: string[];
 };
 
 export type ResultDataType = {
@@ -32,6 +33,7 @@ export type ISearchResult = {
       _current: number;
       _size: number;
     };
+    _matchedFields?: string[];
   };
 };
 

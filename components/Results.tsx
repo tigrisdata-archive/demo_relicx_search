@@ -50,7 +50,7 @@ export default function Results({ data, updatePageTo, className }: Props) {
 
   return (
     <div className={className}>
-      <ColGrid numCols={8} gapX='gap-x-6' gapY='gap-y-6' marginTop='mt-6'>
+      <ColGrid numCols={8} gapX='gap-x-6' gapY='gap-y-6' marginTop='mt-1'>
         <Col numColSpan={2}>
           <Card marginTop='mt-0' decoration='top' decorationColor={'indigo'}>
             <Text> Total results </Text>
