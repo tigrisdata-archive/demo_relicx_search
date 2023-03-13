@@ -99,7 +99,6 @@ export default function Search() {
     <main className='relative bg-slate-50 p-6 sm:p-10'>
       <div className='flex flex-row items-center justify-between'>
         <Title>Dashboard</Title>
-
         <Text color='rose' textAlignment='text-left' truncate={false} height='' marginTop='mt-0'>
           {resultData.error}
         </Text>
@@ -113,7 +112,19 @@ export default function Search() {
         matchedFields={resultData.result._meta._matchedFields}
         searchedFields={searchedState.searchedFields}
         searchFieldUpdated={(selected: string) => {
-          setSearchedState(state => ({ ...state, searchedFields: selected == '' ? undefined : [selected], page: 1 }));
+          ref.current = 0;
+
+          setSearchedState(state => ({
+            ...state,
+            searchedFields: selected == '' ? undefined : [selected],
+            page: 1,
+            query: selected == '' ? '' : state.query,
+          }));
+
+          setResultData(state => ({
+            ...state,
+            result: selected == '' ? result : state.result,
+          }));
         }}
         dateUpdated={(d: (Date | undefined)[]) => {
           if (d[0]) {
