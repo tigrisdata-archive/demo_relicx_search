@@ -36,7 +36,7 @@ export default function QueryDateSelector({
             queryUpdated(e.target.value);
           }}
           onFocus={() => {
-            dropDownRef.current.openDropDownWithCheck();
+            dropDownRef.current?.openDropDownWithCheck();
           }}
         />
 
