@@ -52,6 +52,7 @@ export default function QueryDateSelector({
         <div className='mt-1 text-sm' style={{ height: '20px' }}>
           {searchedFields && (
             <>
+              <span className='text-xs pr-0.5 text-gray-800'>searching in</span>
               {searchedFields.map((each, index) => {
                 {
                   return (

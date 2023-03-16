@@ -49,6 +49,7 @@ export default forwardRef(function DropDown(props: PropsType, ref: Ref<RefType>)
         } absolute z-10 top-0 left-1 max-w-xs bg-white drop-shadow-xl border-gray-300 rounded-b-lg leading-7 p-4`}>
         {matchedFields && (
           <>
+            <p className='text-xs p-1 text-gray-800'>search in</p>
             {matchedFields.map((each, index) => {
               return (
                 <span key={index} className='relative inline-block mb-2 w-full'>
