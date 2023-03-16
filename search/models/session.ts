@@ -17,6 +17,12 @@ export class GeoCoordinates {
 
   @SearchField()
   IPv4?: string;
+
+  @SearchField()
+  longitude?: number;
+
+  @SearchField()
+  latitude?: number;
 }
 
 export class Record {

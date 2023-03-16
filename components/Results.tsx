@@ -104,9 +104,9 @@ export default function Results({ data, updatePageTo, className }: Props) {
           <ColGrid numCols={4} gapX='gap-x-6' gapY='gap-y-6'>
             <Col numColSpan={1}>
               <Card decoration='top' decorationColor={'stone'}>
-                <Title>Vendor</Title>
+                <Title>Device</Title>
                 <DonutChart
-                  data={data._facets['record.vendor'] ? data._facets['record.vendor']._counts : []}
+                  data={data._facets['record.device'] ? data._facets['record.device']._counts : []}
                   category='_count'
                   dataKey='_value'
                   marginTop='mt-0'
