@@ -18,11 +18,11 @@ export class GeoCoordinates {
   @SearchField()
   IPv4?: string;
 
-  @SearchField()
-  longitude?: number;
+  @SearchField(TigrisDataTypes.NUMBER)
+  longitude?: string;
 
-  @SearchField()
-  latitude?: number;
+  @SearchField(TigrisDataTypes.NUMBER)
+  latitude?: string;
 }
 
 export class Record {
