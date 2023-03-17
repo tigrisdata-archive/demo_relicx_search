@@ -4,7 +4,7 @@
   "plugins": ["@typescript-eslint", "functional", "unused-imports", "prettier"],
 
   "rules": {
-    "no-console": "error",
+    "no-console": "off",
     "@typescript-eslint/ban-types": "off"
   }
 }
