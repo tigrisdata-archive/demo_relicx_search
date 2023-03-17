@@ -8,7 +8,16 @@ const columns: TableColumn<EachRow>[] = [
   {
     name: 'created_at',
     selector: (row: EachRow) => {
-      return `${moment(row._document['created_at']).utc().format('MMMM Do YYYY, h:mm:ss a')}`;
+      return (
+        <>
+          <a
+            href={`https://app.relicx.ai/${row._document.record['app_id']}/session/${row._document.record['session_id']}`}
+            className='text-cyan-800 hover:underline'
+            target='_blank'>
+            {`${moment(row._document['created_at']).utc().format('MMMM Do YYYY, h:mm:ss a')}`}
+          </a>
+        </>
+      );
     },
   },
 
@@ -22,28 +31,16 @@ const columns: TableColumn<EachRow>[] = [
   // },
 
   {
-    name: 'entry_url',
+    name: 'session',
     selector: (row: EachRow) => row._document.record['entry_url'],
-  },
-  {
-    name: 'origin',
-    selector: (row: EachRow) => row._document.record['origin'],
   },
   {
     name: 'browser',
     selector: (row: EachRow) => row._document.record['browser'],
   },
   {
-    name: 'vendor',
-    selector: (row: EachRow) => row._document.record['vendor'],
-  },
-  {
     name: 'hostname',
     selector: (row: EachRow) => row._document.record['hostname'],
-  },
-  {
-    name: 'user_agent',
-    selector: (row: EachRow) => row._document.record['user_agent'],
   },
 ];
 
@@ -78,8 +75,7 @@ export const DataTablePagination = ({ data, updatePageTo }: Props) => {
         className='mt-4 border-2 border-slate-110'
         columns={columns}
         data={data._hits}
-        expandableRows
-        expandableRowsComponent={ExpandedComponent}
+        expandableRows={false}
       />
     </div>
   );

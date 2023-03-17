@@ -29,7 +29,7 @@ const MapDataForBarlistFromAFacet = (facetKey: string, facet: IFacets) => {
   let stats: IStatsEach = {};
   if (facetKey in facet) {
     const bData = facet[facetKey];
-    mapped = bData._counts.map(each => {
+    mapped = bData._counts.slice(0, 5).map(each => {
       return { name: each._value, value: each._count };
     });
     stats = bData._stats;
@@ -40,12 +40,16 @@ const MapDataForBarlistFromAFacet = (facetKey: string, facet: IFacets) => {
 const valueFormatter = (number: number) => `Count ${number.toString()}`;
 
 export default function Results({ data, updatePageTo, className }: Props) {
-  const browserBarListData = useMemo(() => {
-    return MapDataForBarlistFromAFacet('record.geo_coordinates.city', data._facets);
+  const entryUrlData = useMemo(() => {
+    return MapDataForBarlistFromAFacet('record.entry_url', data._facets);
   }, [data._facets]);
 
-  const platformBarListData = useMemo(() => {
-    return MapDataForBarlistFromAFacet('record.platform', data._facets);
+  const userEmailData = useMemo(() => {
+    return MapDataForBarlistFromAFacet('record.user_vars.email', data._facets);
+  }, [data._facets]);
+
+  const userTenantData = useMemo(() => {
+    return MapDataForBarlistFromAFacet('record.user_vars.tenant', data._facets);
   }, [data._facets]);
 
   return (
@@ -59,7 +63,7 @@ export default function Results({ data, updatePageTo, className }: Props) {
           </Card>
 
           <Card marginTop='mt-4'>
-            <Title>City</Title>
+            <Title>Top URLs</Title>
             <Flex marginTop='mt-4'>
               <Text>
                 <Bold>Source</Bold>
@@ -68,11 +72,11 @@ export default function Results({ data, updatePageTo, className }: Props) {
                 <Bold>Counts</Bold>
               </Text>
             </Flex>
-            <BarList data={browserBarListData.counts} marginTop='mt-2' />
+            <BarList data={entryUrlData.counts} marginTop='mt-2' />
           </Card>
 
           <Card marginTop='mt-4'>
-            <Title>Platform</Title>
+            <Title>Top Users</Title>
             <Flex marginTop='mt-4'>
               <Text>
                 <Bold>Source</Bold>
@@ -81,7 +85,20 @@ export default function Results({ data, updatePageTo, className }: Props) {
                 <Bold>Counts</Bold>
               </Text>
             </Flex>
-            <BarList data={platformBarListData.counts} marginTop='mt-2' />
+            <BarList data={userEmailData.counts} marginTop='mt-2' />
+          </Card>
+
+          <Card marginTop='mt-4'>
+            <Title>Top Tenants</Title>
+            <Flex marginTop='mt-4'>
+              <Text>
+                <Bold>Source</Bold>
+              </Text>
+              <Text>
+                <Bold>Counts</Bold>
+              </Text>
+            </Flex>
+            <BarList data={userTenantData.counts} marginTop='mt-2' />
           </Card>
 
           <Card marginTop='mt-4'>

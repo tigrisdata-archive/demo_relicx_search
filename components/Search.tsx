@@ -21,7 +21,7 @@ export default function Search() {
     query: '',
     page: 1,
     size: 50,
-    order: 'asc',
+    order: 'desc',
   });
 
   const [resultData, setResultData] = useState<ResultDataType>({

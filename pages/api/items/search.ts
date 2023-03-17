@@ -43,19 +43,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
             'record.language',
             'record.capturedSessionState',
             'record.vendor',
+            'record.user_vars.email',
+            'record.user_vars.tenant',
           ],
       facets: metaOnly
         ? undefined
         : [
             'record.geo_coordinates.city',
-            'record.geo_coordinates.state',
-            'record.geo_coordinates.countryCode',
             'record.geo_coordinates.countryName',
             'record.browser',
             'record.device',
             'record.platform',
             'record.language',
-            'record.vendor',
+            'record.entry_url',
+            'record.user_vars.email',
+            'record.user_vars.tenant',
           ],
       sort: [
         {

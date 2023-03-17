@@ -25,6 +25,17 @@ export class GeoCoordinates {
   latitude?: string;
 }
 
+export class UserVars {
+  @SearchField(TigrisDataTypes.UUID)
+  user_id?: string;
+
+  @SearchField({ facet: true })
+  email?: string;
+
+  @SearchField({ facet: true })
+  tenant?: string;
+}
+
 export class Record {
   @SearchField(TigrisDataTypes.UUID)
   app_id?: string;
@@ -47,7 +58,7 @@ export class Record {
   @SearchField({ facet: true })
   device?: string;
 
-  @SearchField()
+  @SearchField({ facet: true })
   entry_url?: string;
 
   @SearchField()
@@ -58,6 +69,9 @@ export class Record {
 
   @SearchField({ facet: true })
   platform?: string;
+
+  @SearchField()
+  user_vars?: UserVars;
 
   @SearchField({ facet: true })
   language?: string;

@@ -1,13 +1,14 @@
-import * as fs from "fs";
-import * as zlib from "zlib";
-import * as JSONBig from "json-bigint";
-import { clearInterval } from "timers";
-import { parser } from "stream-json";
-import { streamArray } from "stream-json/streamers/StreamArray";
-import { batch } from "stream-json/utils/Batch";
-import { Tigris } from "@tigrisdata/core";
-import { SearchIndex } from "@tigrisdata/core/dist/search";
-import { Session, SESSION_INDEX_NAME } from "../search/models/session";
+import * as fs from 'fs';
+import * as zlib from 'zlib';
+import * as JSONBig from 'json-bigint';
+import { clearInterval } from 'timers';
+import { parser } from 'stream-json';
+import { streamArray } from 'stream-json/streamers/StreamArray';
+import { batch } from 'stream-json/utils/Batch';
+import { faker } from '@faker-js/faker';
+import { Tigris } from '@tigrisdata/core';
+import { SearchIndex } from '@tigrisdata/core/dist/search';
+import { Session, SESSION_INDEX_NAME } from '../search/models/session';
 
 async function main() {
   const tigrisClient = new Tigris();
@@ -19,19 +20,16 @@ async function main() {
   // load seed data
   const index = await search.getIndex<Session>(SESSION_INDEX_NAME);
 
-  const dataFile = "scripts/data/session.json.gz";
-  console.log("Seeding data from file ", dataFile);
+  const dataFile = 'scripts/data/session.json.gz';
+  console.log('Seeding data from file ', dataFile);
 
   const inputStream = fs.createReadStream(dataFile);
 
   await importJSON(inputStream, index);
 }
 
-async function importJSON(
-  readStream: fs.ReadStream,
-  index: SearchIndex<Session>
-) {
-  const loader = loadingAnimation("Loading...");
+async function importJSON(readStream: fs.ReadStream, index: SearchIndex<Session>) {
+  const loader = loadingAnimation('Loading...');
 
   let numDocsLoaded = 0;
   const batchSize = 10;
@@ -50,6 +48,25 @@ async function importJSON(
       delete parsed.ir_json;
 
       parsed.record = JSONBig.parse(parsed.record);
+      parsed.record.user_vars.email = faker.helpers.arrayElement([
+        'ot@tigrisdata.com',
+        'tkhan@tigrisdata.com',
+        'debaditya.chatterjee@gmail.com',
+        'hello@designcode.me',
+        'phil@gamerdb.com',
+        'carter@cascadiajs.com',
+        'ovaistariq@gmail.com',
+        'csagula@litebox.ai',
+      ]);
+      parsed.record.user_vars.tenant = faker.helpers.arrayElement([
+        'tigrisdata',
+        'designcode',
+        'google',
+        'gamerdb',
+        'litebox',
+        'cascadiajs',
+      ]);
+
       parsed.viewport = JSONBig.parse(parsed.viewport);
 
       return parsed;
@@ -83,15 +100,11 @@ async function importJSON(
  * setTimeout(() => clearInterval(loader), 1000);
  * @returns {number} An interval that can be cleared to stop the animation
  */
-function loadingAnimation(
-  text = "",
-  chars = ["⠙", "⠘", "⠰", "⠴", "⠤", "⠦", "⠆", "⠃", "⠋", "⠉"],
-  delay = 100
-) {
+function loadingAnimation(text = '', chars = ['⠙', '⠘', '⠰', '⠴', '⠤', '⠦', '⠆', '⠃', '⠋', '⠉'], delay = 100) {
   let x = 0;
 
   return setInterval(function () {
-    process.stdout.write("\r" + chars[x++] + " " + text);
+    process.stdout.write('\r' + chars[x++] + ' ' + text);
     x = x % chars.length;
   }, delay);
 }
@@ -100,7 +113,7 @@ main()
   .then(async () => {
     process.exit(0);
   })
-  .catch(async (e) => {
+  .catch(async e => {
     console.error(e);
     process.exit(1);
   });
