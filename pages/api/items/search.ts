@@ -1,8 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { LogicalOperator, SelectorFilterOperator } from '@tigrisdata/core';
-import { SearchMeta, SearchQuery, SearchResult } from '@tigrisdata/core/dist/search';
+import { LogicalOperator, Order, SelectorFilterOperator } from '@tigrisdata/core';
+import { SearchMeta, SearchQuery, SearchResult } from '@tigrisdata/core';
 import searchClient from '../../../lib/tigris';
-import { Session, SESSION_INDEX_NAME } from '../../../search/models/session';
+import { IndexedProperties, SessionV2, SESSIONV2_INDEX_NAME } from '../../../search/models/sessionv2';
 
 type Data = {
   result?: SearchResult<Session> | SearchMeta;
@@ -18,34 +18,36 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     return;
   }
   try {
-    const index = await searchClient.getIndex<Session>(SESSION_INDEX_NAME);
+    const index = await searchClient.getIndex<SessionV2>(SESSIONV2_INDEX_NAME);
 
-    const request: SearchQuery<Session> = {
+    const request: SearchQuery<SessionV2> = {
       q: q as string,
       searchFields: searchFields
         ? (searchFields as string).split(',')
         : [
-            'record.app_id',
-            'record.org_id',
-            'record.session_id',
-            'record.user_id',
-            'record.browser',
-            'record.geo_coordinates.city',
-            'record.geo_coordinates.state',
-            'record.geo_coordinates.countryCode',
-            'record.geo_coordinates.countryName',
-            'record.geo_coordinates.IPv4',
-            'record.device',
-            'record.entry_url',
-            'record.hostname',
-            'record.labels',
-            'record.platform',
-            'record.language',
-            'record.capturedSessionState',
-            'record.vendor',
-            'record.user_vars.email',
-            'record.user_vars.tenant',
-          ],
+            'indexed_properties.hostname',
+            'indexed_properties.origin',
+            'indexed_properties.sessionId',
+            'indexed_properties.userId',
+            'indexed_properties.userId',
+            'indexed_properties.userAgent',
+            'indexed_properties.browser',
+            'indexed_properties.language',
+            'indexed_properties.platform',
+            'indexed_properties.vendor',
+            'indexed_properties.referrer',
+            'indexed_properties.entryUrl',
+            'indexed_properties.geoCoordinates.city',
+            'indexed_properties.geoCoordinates.state',
+            'indexed_properties.geoCoordinates.countryCode',
+            'indexed_properties.geoCoordinates.countryName',
+            'indexed_properties.geoCoordinates.IPv4',
+            'indexed_properties.user_vars.user_id',
+            'indexed_properties.user_vars.email',
+            'indexed_properties.user_vars.tenant',
+            'indexed_properties.labels',
+            'indexed_properties.sessionType',
+          ] /*
       facets: metaOnly
         ? undefined
         : [
@@ -61,15 +63,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
           ],
       sort: [
         {
-          field: 'created_at',
+          field: 'indexed_properties.timestamp',
           order: order?.toString().toLowerCase() == 'asc' ? '$asc' : '$desc',
         },
-      ],
+      ], */,
       hitsPerPage: Number(size) || 10,
       filter:
         dateStart && dateEnd
           ? {
-              op: LogicalOperator.AND,
+              /* op: LogicalOperator.AND,
               selectorFilters: [
                 {
                   op: SelectorFilterOperator.GTE,
@@ -83,7 +85,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
                     created_at: new Date(dateEnd.toString()),
                   },
                 },
-              ],
+              ], */
             }
           : undefined,
     };
