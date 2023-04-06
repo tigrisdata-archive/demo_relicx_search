@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { LogicalOperator, Order, SelectorFilterOperator } from '@tigrisdata/core';
 import { SearchMeta, SearchQuery, SearchResult } from '@tigrisdata/core';
 import searchClient from '../../../lib/tigris';
-import { IndexedProperties, SessionV2, SESSIONV2_INDEX_NAME } from '../../../search/models/sessionv2';
+import { SessionV2, SESSIONV2_INDEX_NAME } from '../../../search/models/sessionv2';
 
 type Data = {
   result?: SearchResult<Session> | SearchMeta;
@@ -20,6 +20,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   try {
     const index = await searchClient.getIndex<SessionV2>(SESSIONV2_INDEX_NAME);
 
+    console.log('dateStart: ', dateStart);
+    console.log('dateStart: ', Date.parse(dateStart as string).toString());
+
+    console.log('dateEnd: ', dateEnd);
+    console.log('dateEnd: ', Date.parse(dateEnd as string).toString());
+
     const request: SearchQuery<SessionV2> = {
       q: q as string,
       searchFields: searchFields
@@ -29,7 +35,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
             'indexed_properties.origin',
             'indexed_properties.sessionId',
             'indexed_properties.userId',
-            'indexed_properties.userId',
             'indexed_properties.userAgent',
             'indexed_properties.browser',
             'indexed_properties.language',
@@ -37,55 +42,65 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
             'indexed_properties.vendor',
             'indexed_properties.referrer',
             'indexed_properties.entryUrl',
+            'indexed_properties.orgId',
+            'indexed_properties.appId',
             'indexed_properties.geoCoordinates.city',
             'indexed_properties.geoCoordinates.state',
             'indexed_properties.geoCoordinates.countryCode',
             'indexed_properties.geoCoordinates.countryName',
             'indexed_properties.geoCoordinates.IPv4',
-            'indexed_properties.user_vars.user_id',
-            'indexed_properties.user_vars.email',
-            'indexed_properties.user_vars.tenant',
+            'indexed_properties.userVars.user_id',
+            'indexed_properties.userVars.email',
+            'indexed_properties.userVars.tenant',
             'indexed_properties.labels',
             'indexed_properties.sessionType',
-          ] /*
+          ],
       facets: metaOnly
         ? undefined
         : [
-            'record.geo_coordinates.city',
-            'record.geo_coordinates.countryName',
-            'record.browser',
-            'record.device',
-            'record.platform',
-            'record.language',
-            'record.entry_url',
-            'record.user_vars.email',
-            'record.user_vars.tenant',
+            'indexed_properties.geoCoordinates.city',
+            'indexed_properties.geoCoordinates.countryName',
+            'indexed_properties.browser',
+            'indexed_properties.language',
+            'indexed_properties.platform',
+            'indexed_properties.vendor',
+            'indexed_properties.entryUrl',
+            'indexed_properties.labels',
+            'indexed_properties.activeDuration',
+            'indexed_properties.sessionDuration',
+            'indexed_properties.errors',
+            'indexed_properties.userVars.email',
+            'indexed_properties.userVars.tenant',
           ],
       sort: [
         {
           field: 'indexed_properties.timestamp',
           order: order?.toString().toLowerCase() == 'asc' ? '$asc' : '$desc',
         },
-      ], */,
+      ],
       hitsPerPage: Number(size) || 10,
       filter:
         dateStart && dateEnd
           ? {
-              /* op: LogicalOperator.AND,
+              op: LogicalOperator.AND,
               selectorFilters: [
                 {
                   op: SelectorFilterOperator.GTE,
                   fields: {
-                    created_at: new Date(dateStart.toString()),
+                    indexed_properties: {
+                      timestamp: Date.parse(dateStart as string).toString(),
+                    },
                   },
                 },
                 {
                   op: SelectorFilterOperator.LTE,
                   fields: {
-                    created_at: new Date(dateEnd.toString()),
+                    indexed_properties: {
+                      timestamp: Date.parse(dateEnd as string).toString(),
+                    },
                   },
                 },
-              ], */
+              ],
             }
           : undefined,
     };

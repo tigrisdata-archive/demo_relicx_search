@@ -21,19 +21,19 @@ export type ISearchResponse = {
 
 export type EachRow = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  _document: { [key: string]: any };
+  document: { [key: string]: any };
 };
 export type ISearchResult = {
-  _hits: EachRow[];
-  _facets: IFacets;
-  _meta: {
-    _found: number;
-    _totalPages: number;
-    _page: {
-      _current: number;
-      _size: number;
+  hits: EachRow[];
+  facets: IFacets;
+  meta: {
+    found: number;
+    totalPages: number;
+    page: {
+      current: number;
+      size: number;
     };
-    _matchedFields?: string[];
+    matchedFields?: string[];
   };
 };
 
@@ -42,17 +42,17 @@ export type IFacets = {
 };
 
 export type IFacetEach = {
-  _counts: {
-    _count: number;
-    _value: string;
+  counts: {
+    count: number;
+    value: string;
   }[];
-  _stats: IStatsEach;
+  stats: IStatsEach;
 };
 
 export type IStatsEach = {
-  _avg?: string;
-  _count?: number;
-  _max?: number;
-  _min?: number;
-  _sum?: number;
+  avg?: string;
+  count?: number;
+  max?: number;
+  min?: number;
+  sum?: number;
 };

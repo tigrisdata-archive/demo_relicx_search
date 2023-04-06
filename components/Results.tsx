@@ -29,10 +29,13 @@ const MapDataForBarlistFromAFacet = (facetKey: string, facet: IFacets) => {
   let stats: IStatsEach = {};
   if (facetKey in facet) {
     const bData = facet[facetKey];
-    mapped = bData._counts.slice(0, 5).map(each => {
-      return { name: each._value, value: each._count };
+    mapped = bData.counts.slice(0, 5).map(each => {
+      if (each.value === '') {
+        return { name: 'Not Set', value: each.count };
+      }
+      return { name: each.value, value: each.count };
     });
-    stats = bData._stats;
+    stats = bData.stats;
   }
   return { counts: mapped, stats };
 };
@@ -41,16 +44,16 @@ const valueFormatter = (number: number) => `Count ${number.toString()}`;
 
 export default function Results({ data, updatePageTo, className }: Props) {
   const entryUrlData = useMemo(() => {
-    return MapDataForBarlistFromAFacet('record.entry_url', data._facets);
-  }, [data._facets]);
+    return MapDataForBarlistFromAFacet('indexed_properties.entryUrl', data.facets);
+  }, [data.facets]);
 
   const userEmailData = useMemo(() => {
-    return MapDataForBarlistFromAFacet('record.user_vars.email', data._facets);
-  }, [data._facets]);
+    return MapDataForBarlistFromAFacet('indexed_properties.userVars.email', data.facets);
+  }, [data.facets]);
 
   const userTenantData = useMemo(() => {
-    return MapDataForBarlistFromAFacet('record.user_vars.tenant', data._facets);
-  }, [data._facets]);
+    return MapDataForBarlistFromAFacet('indexed_properties.userVars.tenant', data.facets);
+  }, [data.facets]);
 
   return (
     <div className={className}>
@@ -58,8 +61,8 @@ export default function Results({ data, updatePageTo, className }: Props) {
         <Col numColSpan={2}>
           <Card marginTop='mt-0' decoration='top' decorationColor={'indigo'}>
             <Text> Total results </Text>
-            <Metric> {data._meta._found} </Metric>
-            <Text>{data._meta._page._size} results per page</Text>
+            <Metric> {data.meta.found} </Metric>
+            <Text>{data.meta.page.size} results per page</Text>
           </Card>
 
           <Card marginTop='mt-4'>
@@ -106,10 +109,12 @@ export default function Results({ data, updatePageTo, className }: Props) {
             <Subtitle>Count per city</Subtitle>
             <BarChart
               data={
-                data._facets['record.geo_coordinates.city'] ? data._facets['record.geo_coordinates.city']._counts : []
+                data.facets['indexed_properties.geoCoordinates.city']
+                  ? data.facets['indexed_properties.geoCoordinates.city'].counts
+                  : []
               }
-              dataKey='_value'
-              categories={['_count']}
+              dataKey='value'
+              categories={['count']}
               colors={['amber']}
               marginTop='mt-6'
               yAxisWidth='w-12'
@@ -123,9 +128,9 @@ export default function Results({ data, updatePageTo, className }: Props) {
               <Card decoration='top' decorationColor={'stone'}>
                 <Title>Device</Title>
                 <DonutChart
-                  data={data._facets['record.device'] ? data._facets['record.device']._counts : []}
-                  category='_count'
-                  dataKey='_value'
+                  data={data.facets['indexed_properties.device'] ? data.facets['indexed_properties.device'].counts : []}
+                  category='count'
+                  dataKey='value'
                   marginTop='mt-0'
                   valueFormatter={valueFormatter}
                   colors={['slate', 'violet', 'indigo', 'rose', 'cyan', 'amber']}
@@ -134,9 +139,11 @@ export default function Results({ data, updatePageTo, className }: Props) {
               <Card decoration='top' decorationColor={'rose'} marginTop='mt-4'>
                 <Title>Platform</Title>
                 <DonutChart
-                  data={data._facets['record.platform'] ? data._facets['record.platform']._counts : []}
-                  category='_count'
-                  dataKey='_value'
+                  data={
+                    data.facets['indexed_properties.platform'] ? data.facets['indexed_properties.platform'].counts : []
+                  }
+                  category='count'
+                  dataKey='value'
                   marginTop='mt-0'
                   valueFormatter={valueFormatter}
                   colors={['slate', 'violet', 'indigo', 'rose', 'cyan', 'amber']}
@@ -147,9 +154,11 @@ export default function Results({ data, updatePageTo, className }: Props) {
               <Card decoration='top' decorationColor={'amber'}>
                 <Title>Browser</Title>
                 <DonutChart
-                  data={data._facets['record.browser'] ? data._facets['record.browser']._counts : []}
-                  category='_count'
-                  dataKey='_value'
+                  data={
+                    data.facets['indexed_properties.browser'] ? data.facets['indexed_properties.browser'].counts : []
+                  }
+                  category='count'
+                  dataKey='value'
                   marginTop='mt-0'
                   valueFormatter={valueFormatter}
                   colors={['slate', 'violet', 'indigo', 'rose', 'cyan', 'amber']}
@@ -158,9 +167,11 @@ export default function Results({ data, updatePageTo, className }: Props) {
               <Card decoration='top' decorationColor={'cyan'} marginTop='mt-4'>
                 <Title>Language</Title>
                 <DonutChart
-                  data={data._facets['record.language'] ? data._facets['record.language']._counts : []}
-                  category='_count'
-                  dataKey='_value'
+                  data={
+                    data.facets['indexed_properties.language'] ? data.facets['indexed_properties.language'].counts : []
+                  }
+                  category='count'
+                  dataKey='value'
                   marginTop='mt-0'
                   valueFormatter={valueFormatter}
                   colors={['slate', 'violet', 'indigo', 'rose', 'cyan', 'amber']}
@@ -169,7 +180,8 @@ export default function Results({ data, updatePageTo, className }: Props) {
             </Col>
 
             <Col numColSpan={2}>
-              <MapChartWithToolTip data={data._facets['record.geo_coordinates.countryName']}></MapChartWithToolTip>
+              <MapChartWithToolTip
+                data={data.facets['indexed_properties.geoCoordinates.countryName']}></MapChartWithToolTip>
             </Col>
           </ColGrid>
 

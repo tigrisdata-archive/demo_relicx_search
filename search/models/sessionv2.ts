@@ -73,7 +73,7 @@ export class IndexedProperties {
   @SearchField()
   referrer?: string;
 
-  @SearchField()
+  @SearchField({ facet: true })
   entryUrl?: string;
 
   @SearchField()
@@ -100,13 +100,13 @@ export class IndexedProperties {
   @SearchField()
   sessionType?: string;
 
-  @SearchField(TigrisDataTypes.INT64, { sort: true })
+  @SearchField(TigrisDataTypes.INT64, { facet: true, sort: true })
   activeDuration?: string;
 
-  @SearchField(TigrisDataTypes.INT64, { sort: true })
+  @SearchField(TigrisDataTypes.INT64, { facet: true, sort: true })
   sessionDuration?: string;
 
-  @SearchField(TigrisDataTypes.INT64, { sort: true })
+  @SearchField(TigrisDataTypes.INT64, { facet: true, sort: true })
   errors?: string;
 }
 
