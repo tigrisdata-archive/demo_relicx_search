@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { LogicalOperator, Order, SelectorFilterOperator } from '@tigrisdata/core';
+import { LogicalOperator, SelectorFilterOperator } from '@tigrisdata/core';
 import { SearchMeta, SearchQuery, SearchResult } from '@tigrisdata/core/dist/search';
 import searchClient from '../../../lib/tigris';
 import { Session, SESSION_INDEX_NAME } from '../../../search/models/session';
@@ -62,7 +62,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       sort: [
         {
           field: 'created_at',
-          order: order?.toString().toLowerCase() == 'asc' ? Order.ASC : Order.DESC,
+          order: order?.toString().toLowerCase() == 'asc' ? '$asc' : '$desc',
         },
       ],
       hitsPerPage: Number(size) || 10,
