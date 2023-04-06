@@ -3,6 +3,7 @@ import { LogicalOperator, SelectorFilterOperator } from '@tigrisdata/core';
 import { SearchMeta, SearchQuery, SearchResult } from '@tigrisdata/core';
 import searchClient from '../../../lib/tigris';
 import { SessionV2, SESSIONV2_INDEX_NAME } from '../../../search/models/sessionv2';
+import JSONBig from 'json-bigint';
 
 type Data = {
   result?: SearchResult<SessionV2> | SearchMeta;
@@ -19,12 +20,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   }
   try {
     const index = await searchClient.getIndex<SessionV2>(SESSIONV2_INDEX_NAME);
-
-    console.log('dateStart: ', dateStart);
-    console.log('dateStart: ', Date.parse(dateStart as string).toString());
-
-    console.log('dateEnd: ', dateEnd);
-    console.log('dateEnd: ', Date.parse(dateEnd as string).toString());
 
     const request: SearchQuery<SessionV2> = {
       q: q as string,
@@ -105,7 +100,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     index
       .search(request, Number(page) || 1)
       .then(results => {
-        res.status(200).json({ result: metaOnly ? results.meta : results });
+        res
+          .status(200)
+          .setHeader('Content-Type', 'application/json; charset=utf-8')
+          .send({ result: metaOnly ? results.meta : results });
       })
       .catch(error => {
         throw error;
