@@ -1,11 +1,11 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { LogicalOperator, Order, SelectorFilterOperator } from '@tigrisdata/core';
+import { LogicalOperator, SelectorFilterOperator } from '@tigrisdata/core';
 import { SearchMeta, SearchQuery, SearchResult } from '@tigrisdata/core';
 import searchClient from '../../../lib/tigris';
 import { SessionV2, SESSIONV2_INDEX_NAME } from '../../../search/models/sessionv2';
 
 type Data = {
-  result?: SearchResult<Session> | SearchMeta;
+  result?: SearchResult<SessionV2> | SearchMeta;
   error?: string;
 };
 
@@ -66,9 +66,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
             'indexed_properties.vendor',
             'indexed_properties.entryUrl',
             'indexed_properties.labels',
-            'indexed_properties.activeDuration',
-            'indexed_properties.sessionDuration',
-            'indexed_properties.errors',
             'indexed_properties.userVars.email',
             'indexed_properties.userVars.tenant',
           ],
