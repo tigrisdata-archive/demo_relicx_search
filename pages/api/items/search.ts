@@ -3,7 +3,6 @@ import { LogicalOperator, SelectorFilterOperator } from '@tigrisdata/core';
 import { SearchMeta, SearchQuery, SearchResult } from '@tigrisdata/core';
 import searchClient from '../../../lib/tigris';
 import { SessionV2, SESSIONV2_INDEX_NAME } from '../../../search/models/sessionv2';
-import JSONBig from 'json-bigint';
 
 type Data = {
   result?: SearchResult<SessionV2> | SearchMeta;
@@ -80,7 +79,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
                   op: SelectorFilterOperator.GTE,
                   fields: {
                     indexed_properties: {
-                      timestamp: Date.parse(dateStart as string).toString(),
+                      timestamp: Date.parse(dateStart as string) * 1000,
                     },
                   },
                 },
@@ -88,7 +87,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
                   op: SelectorFilterOperator.LTE,
                   fields: {
                     indexed_properties: {
-                      timestamp: Date.parse(dateEnd as string).toString(),
+                      timestamp: Date.parse(dateEnd as string) * 1000,
                     },
                   },
                 },
@@ -100,10 +99,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     index
       .search(request, Number(page) || 1)
       .then(results => {
-        res
-          .status(200)
-          .setHeader('Content-Type', 'application/json; charset=utf-8')
-          .send({ result: metaOnly ? results.meta : results });
+        res.status(200).json({ result: metaOnly ? results.meta : results });
       })
       .catch(error => {
         throw error;

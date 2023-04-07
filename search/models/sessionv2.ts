@@ -16,10 +16,10 @@ export class GeoCoordinates {
   postal?: string;
 
   @SearchField(TigrisDataTypes.NUMBER)
-  latitude?: string;
+  latitude?: number;
 
   @SearchField(TigrisDataTypes.NUMBER)
-  longitude?: string;
+  longitude?: number;
 
   @SearchField()
   IPv4?: string;
@@ -41,7 +41,7 @@ export class UserVars {
 
 export class IndexedProperties {
   @SearchField(TigrisDataTypes.INT64, { sort: true })
-  timestamp?: string;
+  timestamp?: number;
 
   @SearchField()
   hostname?: string;

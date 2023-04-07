@@ -6,7 +6,7 @@ import { pagination } from './utils';
 
 const columns: TableColumn<EachRow>[] = [
   {
-    name: 'created_at',
+    name: 'timestamp',
     selector: (row: EachRow) => {
       return (
         <>
@@ -14,7 +14,7 @@ const columns: TableColumn<EachRow>[] = [
             href={`https://app.relicx.ai/${row.document.indexed_properties['appId']}/session/${row.document.indexed_properties['sessionId']}`}
             className='text-cyan-800 hover:underline'
             target='_blank'>
-            {`${moment(row.document['created_at']).utc().format('MMMM Do YYYY, h:mm:ss a')}`}
+            {`${moment(row.document.indexed_properties['timestamp'] / 1000).format('MMMM Do YYYY, h:mm:ss a')}`}
           </a>
         </>
       );
