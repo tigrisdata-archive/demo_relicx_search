@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as zlib from 'zlib';
-import * as JSONBig from 'json-bigint';
+import JSONBig from 'json-bigint';
 import { clearInterval } from 'timers';
 import { parser } from 'stream-json';
 import { streamArray } from 'stream-json/streamers/StreamArray';

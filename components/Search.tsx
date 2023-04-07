@@ -7,9 +7,9 @@ import moment from 'moment';
 import BarLoader from 'react-spinners/BarLoader';
 
 const result: ISearchResult = {
-  _hits: [],
-  _facets: {},
-  _meta: { _found: 0, _totalPages: 0, _page: { _current: 0, _size: 0 } },
+  hits: [],
+  facets: {},
+  meta: { found: 0, totalPages: 0, page: { current: 0, size: 0 } },
 };
 
 const RelaxTrigger = 650;
@@ -20,7 +20,7 @@ export default function Search() {
   const [searchedState, setSearchedState] = useState<SearchStateType>({
     query: '',
     page: 1,
-    size: 50,
+    size: 20,
     order: 'desc',
   });
 
@@ -109,7 +109,7 @@ export default function Search() {
         queryUpdated={(q: string) => {
           setSearchedState(state => ({ ...state, query: q, page: 1 }));
         }}
-        matchedFields={resultData.result._meta._matchedFields}
+        matchedFields={resultData.result.meta.matchedFields}
         searchedFields={searchedState.searchedFields}
         searchFieldUpdated={(selected: string) => {
           ref.current = 0;

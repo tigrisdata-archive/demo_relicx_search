@@ -1,5 +1,5 @@
-import { Tigris } from "@tigrisdata/core";
-import {Session} from "../search/models/session";
+import { Tigris } from '@tigrisdata/core';
+import { SessionV2 } from '../search/models/sessionv2';
 
 async function main() {
   // setup client
@@ -7,15 +7,15 @@ async function main() {
 
   // register index definitions
   const search = tigrisClient.getSearch();
-  await search.createOrUpdateIndex(Session);
+  await search.createOrUpdateIndex(SessionV2);
 }
 
 main()
   .then(async () => {
-    console.log("Setup complete ...");
+    console.log('Setup complete ...');
     process.exit(0);
   })
-  .catch(async (e) => {
+  .catch(async e => {
     console.error(e);
     process.exit(1);
   });

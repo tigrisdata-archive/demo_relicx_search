@@ -29,26 +29,26 @@ files exposing endpoints:
 
 - `/api/items/search?q={searchString}&page={page}&size={size}&order={order}`: Search sessions
   - Query Parameters
-    - `searchString` (required): This searches sessions by `record.*`
+    - `searchString` (required): This searches sessions by `indexed_properties.*`
     - `size` (optional): This specifies how many sessions should be returned in
       the result
     - `page` (optional): This specifies the page number to be returned when
       there are more than one page of search results
     - `order` (optional): The sort order for results in either ascending or
       descending order. The value can either `asc` or `desc`
-    - `dateStart` (optional): This specifies the session timestamp which is 
-      used to filter the matched sessions so that only the ones created on 
+    - `dateStart` (optional): This specifies the session timestamp which is
+      used to filter the matched sessions so that only the ones created on
       or after this date are returned
     - `dateEnd` (optional): This specifies the session timestamp which is
       used to filter the matched sessions so that only the ones created on
       or before this date are returned
-    - `metaOnly` (optional): When set only the metadata is returned 
+    - `metaOnly` (optional): When set only the metadata is returned
       corresponding to the search and not the matched sessions
-    - `searchFields` (optional): This specifies the fields to perform the 
+    - `searchFields` (optional): This specifies the fields to perform the
       search on. By default all the fields are used to perform the search
   - Example
     - `curl http://localhost:3000/api/items/search?q=chrome&size=1`
-    - `curl http://localhost:3000/api/items/search?q=ed&size=1&searchFields=record.browser`
+    - `curl http://localhost:3000/api/items/search?q=ed&size=1&searchFields=indexed_properties.browser`
     - `curl http://localhost:3000/api/items/search?q=chrome&metaOnly=true`
 
 <details>
@@ -73,7 +73,7 @@ files exposing endpoints:
 
 ### 🪢 Search model definition
 
-[models/session.ts](search/models/session.ts) - The app  has a single 
+[models/session.ts](search/models/session.ts) - The app has a single
 search index `session` that stores the relicx sessions.
 
 ### 🌐 Connecting to Tigris

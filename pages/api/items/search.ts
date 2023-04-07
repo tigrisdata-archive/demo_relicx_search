@@ -1,11 +1,11 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { LogicalOperator, SelectorFilterOperator } from '@tigrisdata/core';
-import { SearchMeta, SearchQuery, SearchResult } from '@tigrisdata/core/dist/search';
+import { SearchMeta, SearchQuery, SearchResult } from '@tigrisdata/core';
 import searchClient from '../../../lib/tigris';
-import { Session, SESSION_INDEX_NAME } from '../../../search/models/session';
+import { SessionV2, SESSIONV2_INDEX_NAME } from '../../../search/models/sessionv2';
 
 type Data = {
-  result?: SearchResult<Session> | SearchMeta;
+  result?: SearchResult<SessionV2> | SearchMeta;
   error?: string;
 };
 
@@ -18,50 +18,54 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     return;
   }
   try {
-    const index = await searchClient.getIndex<Session>(SESSION_INDEX_NAME);
+    const index = await searchClient.getIndex<SessionV2>(SESSIONV2_INDEX_NAME);
 
-    const request: SearchQuery<Session> = {
+    const request: SearchQuery<SessionV2> = {
       q: q as string,
       searchFields: searchFields
         ? (searchFields as string).split(',')
         : [
-            'record.app_id',
-            'record.org_id',
-            'record.session_id',
-            'record.user_id',
-            'record.browser',
-            'record.geo_coordinates.city',
-            'record.geo_coordinates.state',
-            'record.geo_coordinates.countryCode',
-            'record.geo_coordinates.countryName',
-            'record.geo_coordinates.IPv4',
-            'record.device',
-            'record.entry_url',
-            'record.hostname',
-            'record.labels',
-            'record.platform',
-            'record.language',
-            'record.capturedSessionState',
-            'record.vendor',
-            'record.user_vars.email',
-            'record.user_vars.tenant',
+            'indexed_properties.hostname',
+            'indexed_properties.origin',
+            'indexed_properties.sessionId',
+            'indexed_properties.userId',
+            'indexed_properties.userAgent',
+            'indexed_properties.browser',
+            'indexed_properties.language',
+            'indexed_properties.platform',
+            'indexed_properties.vendor',
+            'indexed_properties.referrer',
+            'indexed_properties.entryUrl',
+            'indexed_properties.orgId',
+            'indexed_properties.appId',
+            'indexed_properties.geoCoordinates.city',
+            'indexed_properties.geoCoordinates.state',
+            'indexed_properties.geoCoordinates.countryCode',
+            'indexed_properties.geoCoordinates.countryName',
+            'indexed_properties.geoCoordinates.IPv4',
+            'indexed_properties.userVars.user_id',
+            'indexed_properties.userVars.email',
+            'indexed_properties.userVars.tenant',
+            'indexed_properties.labels',
+            'indexed_properties.sessionType',
           ],
       facets: metaOnly
         ? undefined
         : [
-            'record.geo_coordinates.city',
-            'record.geo_coordinates.countryName',
-            'record.browser',
-            'record.device',
-            'record.platform',
-            'record.language',
-            'record.entry_url',
-            'record.user_vars.email',
-            'record.user_vars.tenant',
+            'indexed_properties.geoCoordinates.city',
+            'indexed_properties.geoCoordinates.countryName',
+            'indexed_properties.browser',
+            'indexed_properties.language',
+            'indexed_properties.platform',
+            'indexed_properties.vendor',
+            'indexed_properties.entryUrl',
+            'indexed_properties.labels',
+            'indexed_properties.userVars.email',
+            'indexed_properties.userVars.tenant',
           ],
       sort: [
         {
-          field: 'created_at',
+          field: 'indexed_properties.timestamp',
           order: order?.toString().toLowerCase() == 'asc' ? '$asc' : '$desc',
         },
       ],
@@ -74,13 +78,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
                 {
                   op: SelectorFilterOperator.GTE,
                   fields: {
-                    created_at: new Date(dateStart.toString()),
+                    indexed_properties: {
+                      timestamp: Date.parse(dateStart as string) * 1000,
+                    },
                   },
                 },
                 {
                   op: SelectorFilterOperator.LTE,
                   fields: {
-                    created_at: new Date(dateEnd.toString()),
+                    indexed_properties: {
+                      timestamp: Date.parse(dateEnd as string) * 1000,
+                    },
                   },
                 },
               ],

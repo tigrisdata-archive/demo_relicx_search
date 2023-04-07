@@ -15,12 +15,12 @@ const MapChart = ({ resultForMap, setTooltipContent }: Props) => {
             <Geographies geography='/map.json'>
               {({ geographies }) =>
                 geographies.map(geo => {
-                  const d = resultForMap?._counts.find(s => s._value === geo.properties.name);
+                  const d = resultForMap?.counts.find(s => s.value === geo.properties.name);
 
                   return (
                     <Geography
                       onMouseEnter={() => {
-                        setTooltipContent && setTooltipContent(`${geo.properties.name} ${d ? d._count : ''}`);
+                        setTooltipContent && setTooltipContent(`${geo.properties.name} ${d ? d.count : ''}`);
                       }}
                       onMouseLeave={() => {
                         setTooltipContent && setTooltipContent(``);
