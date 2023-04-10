@@ -2,10 +2,10 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { LogicalOperator, SelectorFilterOperator } from '@tigrisdata/core';
 import { SearchMeta, SearchQuery, SearchResult } from '@tigrisdata/core';
 import searchClient from '../../../lib/tigris';
-import { SessionV2, SESSIONV2_INDEX_NAME } from '../../../search/models/sessionv2';
+import { SessionV3, SESSIONV3_INDEX_NAME } from '../../../search/models/sessionv3';
 
 type Data = {
-  result?: SearchResult<SessionV2> | SearchMeta;
+  result?: SearchResult<SessionV3> | SearchMeta;
   error?: string;
 };
 
@@ -18,9 +18,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     return;
   }
   try {
-    const index = await searchClient.getIndex<SessionV2>(SESSIONV2_INDEX_NAME);
+    const index = await searchClient.getIndex<SessionV3>(SESSIONV3_INDEX_NAME);
 
-    const request: SearchQuery<SessionV2> = {
+    const request: SearchQuery<SessionV3> = {
       q: q as string,
       searchFields: searchFields
         ? (searchFields as string).split(',')
