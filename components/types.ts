@@ -6,6 +6,8 @@ export type SearchStateType = {
   dateStart?: string;
   dateEnd?: string;
   searchedFields?: string[];
+  searchFieldQueryPair: string;
+  filterFields: { value: string; fieldName: string }[];
 };
 
 export type ResultDataType = {
@@ -13,10 +15,23 @@ export type ResultDataType = {
   loading: boolean;
   error?: string;
 };
+export type MetaStateType = {
+  matchedFields?: string[];
+  loading: boolean;
+  error?: string;
+};
 
 export type ISearchResponse = {
   result?: ISearchResult;
   error: string;
+};
+export type IMetaResponse = {
+  result?: IMetaResult;
+  error: string;
+};
+
+export type IMetaResult = {
+  matchedFields: string[];
 };
 
 export type EachRow = {

@@ -11,6 +11,7 @@ type PropsType = {
 export interface RefType {
   closeDropDown: () => void;
   openDropDownWithCheck: () => void;
+  openDropDown: () => void;
 }
 
 export default forwardRef(function DropDown(props: PropsType, ref: Ref<RefType>) {
@@ -29,8 +30,11 @@ export default forwardRef(function DropDown(props: PropsType, ref: Ref<RefType>)
   const closeDropDown = () => {
     setShowDropDown(false);
   };
+  const openDropDown = () => {
+    setShowDropDown(true);
+  };
 
-  useImperativeHandle(ref, () => ({ openDropDownWithCheck, closeDropDown }));
+  useImperativeHandle(ref, () => ({ openDropDownWithCheck, closeDropDown, openDropDown }));
 
   useClickOutside({
     ref: selectRef,

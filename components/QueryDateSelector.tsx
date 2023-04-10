@@ -34,9 +34,10 @@ export default function QueryDateSelector({
           style={{ height: '38px' }}
           onChange={e => {
             queryUpdated(e.target.value);
+            dropDownRef.current?.openDropDown();
           }}
           onFocus={() => {
-            dropDownRef.current?.openDropDownWithCheck();
+            dropDownRef.current?.openDropDown();
           }}
         />
 
