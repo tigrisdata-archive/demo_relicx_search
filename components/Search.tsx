@@ -156,7 +156,6 @@ export default function Search() {
           {resultData.error}
         </Text>
       </div>
-      searchedState: {JSON.stringify(searchedState, null, 2)}
       <QueryDateSelector
         query={searchedState.query}
         queryUpdated={(q: string) => {

@@ -1,4 +1,4 @@
-import { ColGrid, Col, DateRangePicker } from '@tremor/react';
+import { ColGrid, Col, DateRangePicker, Badge } from '@tremor/react';
 import { useRef } from 'react';
 import DropDown, { RefType } from './DropDown';
 
@@ -54,14 +54,13 @@ export default function QueryDateSelector({
             searchedFields={searchedFields}></DropDown>
         </div>
         {/* //List showing searchfields selected for the request */}
-        <div className='mt-1 text-sm' style={{ height: '20px' }}>
+        <div className='my-2 text-sm flex flex-wrap gap-2'>
           {searchedFields && (
             <>
-              <span className='text-xs text-gray-800'>{searchFieldQueryPair} as</span>
               {searchedFields.map((each, index) => {
                 return (
                   <span key={index}>
-                    <label className='pl-1 font-medium'>{each}</label>
+                    <Badge size='sm' text={`${searchFieldQueryPair} as ${each}`}></Badge>
                   </span>
                 );
               })}
@@ -69,19 +68,17 @@ export default function QueryDateSelector({
               {filterFields.map((each, index) => {
                 return (
                   <span key={index}>
-                    <label className='pr-1 '>, {each.value}</label>
-                    is
-                    <label className='pl-1 font-medium'>{each.fieldName}</label>
+                    <Badge size='sm' text={`${each.value} is ${each.fieldName}`}></Badge>
                   </span>
                 );
               })}
 
               <span
-                className='pl-2 cursor-pointer hover:text-gray-400'
+                className='pl-1 cursor-pointer hover:text-gray-400'
                 onClick={() => {
                   searchFieldUpdated('');
                 }}>
-                [clear]
+                <Badge size='sm' color='orange' text='Clear'></Badge>
               </span>
             </>
           )}

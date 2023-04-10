@@ -49,8 +49,8 @@ export default forwardRef(function DropDown(props: PropsType, ref: Ref<RefType>)
       <div
         ref={selectRef}
         className={`${
-          matchedFields && matchedFields.length > 0 && showDropDown ? 'block' : 'hidden'
-        } absolute z-10 top-0 left-1 max-w-xs bg-white drop-shadow-xl border-gray-300 rounded-b-lg leading-7 p-4`}>
+          matchedFields && matchedFields.length > 0 && showDropDown ? 'flex flex-col' : 'hidden'
+        } absolute z-10 top-0 left-1 bg-white drop-shadow-xl border-gray-300 rounded-b-lg leading-7 p-4`}>
         {matchedFields && (
           <>
             <p className='text-xs p-1 text-gray-800'>as</p>
