@@ -7,8 +7,10 @@ type Props = {
   queryUpdated: Function;
   matchedFields?: string[];
   searchedFields?: string[];
+  searchFieldQueryPair: string;
   searchFieldUpdated: Function;
   dateUpdated: Function;
+  filterFields: { value: string; fieldName: string }[];
 };
 
 export default function QueryDateSelector({
@@ -18,6 +20,8 @@ export default function QueryDateSelector({
   searchedFields,
   matchedFields,
   searchFieldUpdated,
+  searchFieldQueryPair,
+  filterFields,
 }: Props) {
   const dropDownRef = useRef<RefType>(null);
 
@@ -53,16 +57,25 @@ export default function QueryDateSelector({
         <div className='mt-1 text-sm' style={{ height: '20px' }}>
           {searchedFields && (
             <>
-              <span className='text-xs pr-0.5 text-gray-800'>searching in</span>
+              <span className='text-xs text-gray-800'>{searchFieldQueryPair} as</span>
               {searchedFields.map((each, index) => {
-                {
-                  return (
-                    <span key={index}>
-                      <label className='p-1 font-medium'>{each}</label>
-                    </span>
-                  );
-                }
+                return (
+                  <span key={index}>
+                    <label className='pl-1 font-medium'>{each}</label>
+                  </span>
+                );
               })}
+
+              {filterFields.map((each, index) => {
+                return (
+                  <span key={index}>
+                    <label className='pr-1 '>, {each.value}</label>
+                    is
+                    <label className='pl-1 font-medium'>{each.fieldName}</label>
+                  </span>
+                );
+              })}
+
               <span
                 className='pl-2 cursor-pointer hover:text-gray-400'
                 onClick={() => {

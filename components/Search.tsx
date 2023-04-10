@@ -56,12 +56,10 @@ export default function Search() {
   }, [searchedState.searchedFields]);
 
   useEffect(() => {
-    return;
-
     async function getData() {
       setResultData(state => ({ ...state, loading: true }));
 
-      const URL = `/api/items/search?q=${searchedState.query}&page=${searchedState.page}&size=${searchedState.size}&order=${searchedState.order}${getStartAndEndDates}${getSearchedFields}`;
+      const URL = `/api/items/search?q=${searchedState.searchFieldQueryPair}&page=${searchedState.page}&size=${searchedState.size}&order=${searchedState.order}${getStartAndEndDates}${getSearchedFields}`;
 
       try {
         const response = await fetch(URL);
@@ -99,9 +97,9 @@ export default function Search() {
     getStartAndEndDates,
     searchedState.order,
     searchedState.page,
-    searchedState.query,
     searchedState.size,
     getSearchedFields,
+    searchedState.searchFieldQueryPair,
   ]);
 
   //Meta call when query changes
@@ -123,13 +121,20 @@ export default function Search() {
               matchedFields: actualData.result ? actualData.result.matchedFields : undefined,
             }));
           } else {
-            throw new Error('No results..');
+            throw new Error('No meta results..');
           }
         } else {
           throw new Error('Incorrect Status');
         }
       } catch (error) {
-        console.log(error);
+        let message = 'Unknown Error';
+        if (error instanceof Error) message = error.message;
+
+        setResultData({
+          result,
+          loading: false,
+          error: `Something went wrong! ${message}`,
+        });
       }
     }
 
@@ -155,7 +160,7 @@ export default function Search() {
       <QueryDateSelector
         query={searchedState.query}
         queryUpdated={(q: string) => {
-          setSearchedState(state => ({ ...state, query: q, page: 1 }));
+          setSearchedState(state => ({ ...state, query: q }));
           setMatchedFieldData(state => ({
             ...state,
             loading: false,
@@ -164,10 +169,11 @@ export default function Search() {
         }}
         matchedFields={matchedFieldData.matchedFields}
         searchedFields={searchedState.searchedFields}
+        searchFieldQueryPair={searchedState.searchFieldQueryPair}
+        filterFields={searchedState.filterFields}
         searchFieldUpdated={(selected: string) => {
           ref.current = 0;
 
-          console.log(selected);
           if (selected == '') {
             setSearchedState(state => ({
               ...state,
