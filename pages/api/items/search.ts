@@ -48,6 +48,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
             'indexed_properties.userVars.tenant',
             'indexed_properties.labels',
             'indexed_properties.sessionType',
+            'commands',
           ],
       facets: metaOnly
         ? undefined
