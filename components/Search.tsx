@@ -59,10 +59,29 @@ export default function Search() {
     async function getData() {
       setResultData(state => ({ ...state, loading: true }));
 
-      const URL = `/api/items/search?q=${searchedState.searchFieldQueryPair}&page=${searchedState.page}&size=${searchedState.size}&order=${searchedState.order}${getStartAndEndDates}${getSearchedFields}`;
+      const URL = `/api/items/searchv2`;
+      //?q=${searchedState.searchFieldQueryPair}&page=${searchedState.page}&size=${searchedState.size}&order=${searchedState.order}${getStartAndEndDates}${getSearchedFields}
 
       try {
-        const response = await fetch(URL);
+        const response = await fetch(URL, {
+          method: 'POST',
+          body: JSON.stringify({
+            q: searchedState.searchFieldQueryPair,
+            searchFields: searchedState.searchedFields,
+            filters: searchedState.filterFields.map(element => {
+              return { field: element.fieldName, operator: 'eq', value: element.value };
+            }),
+            page: searchedState.page,
+            size: searchedState.size,
+            order: searchedState.order,
+            dateStart: searchedState.dateStart ? searchedState.dateStart : '',
+            dateEnd: searchedState.dateEnd
+              ? searchedState.dateEnd
+              : searchedState.dateStart
+              ? searchedState.dateStart
+              : '',
+          }),
+        });
         if (response.ok) {
           const actualData: ISearchResponse = await response.json();
           if (actualData.result) {
@@ -100,6 +119,10 @@ export default function Search() {
     searchedState.size,
     getSearchedFields,
     searchedState.searchFieldQueryPair,
+    searchedState.searchedFields,
+    searchedState.filterFields,
+    searchedState.dateStart,
+    searchedState.dateEnd,
   ]);
 
   //Meta call when query changes
