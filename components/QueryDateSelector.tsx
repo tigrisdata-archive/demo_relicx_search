@@ -68,7 +68,7 @@ export default function QueryDateSelector({
               {filterFields.map((each, index) => {
                 return (
                   <span key={index}>
-                    <Badge size='sm' text={`${each.value} is ${each.fieldName}`}></Badge>
+                    <Badge size='sm' text={`${each.fieldName} is ${each.value}`}></Badge>
                   </span>
                 );
               })}
