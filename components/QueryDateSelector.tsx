@@ -1,4 +1,4 @@
-import { ColGrid, Col, DateRangePicker } from '@tremor/react';
+import { ColGrid, Col, DateRangePicker, Badge } from '@tremor/react';
 import { useRef } from 'react';
 import DropDown, { RefType } from './DropDown';
 
@@ -7,8 +7,10 @@ type Props = {
   queryUpdated: Function;
   matchedFields?: string[];
   searchedFields?: string[];
+  searchFieldQueryPair: string;
   searchFieldUpdated: Function;
   dateUpdated: Function;
+  filterFields: { value: string; fieldName: string }[];
 };
 
 export default function QueryDateSelector({
@@ -18,6 +20,8 @@ export default function QueryDateSelector({
   searchedFields,
   matchedFields,
   searchFieldUpdated,
+  searchFieldQueryPair,
+  filterFields,
 }: Props) {
   const dropDownRef = useRef<RefType>(null);
 
@@ -34,9 +38,10 @@ export default function QueryDateSelector({
           style={{ height: '38px' }}
           onChange={e => {
             queryUpdated(e.target.value);
+            dropDownRef.current?.openDropDown();
           }}
           onFocus={() => {
-            dropDownRef.current?.openDropDownWithCheck();
+            dropDownRef.current?.openDropDown();
           }}
         />
 
@@ -49,25 +54,31 @@ export default function QueryDateSelector({
             searchedFields={searchedFields}></DropDown>
         </div>
         {/* //List showing searchfields selected for the request */}
-        <div className='mt-1 text-sm' style={{ height: '20px' }}>
+        <div className='my-2 text-sm flex flex-wrap gap-2'>
           {searchedFields && (
             <>
-              <span className='text-xs pr-0.5 text-gray-800'>searching in</span>
               {searchedFields.map((each, index) => {
-                {
-                  return (
-                    <span key={index}>
-                      <label className='p-1 font-medium'>{each}</label>
-                    </span>
-                  );
-                }
+                return (
+                  <span key={index}>
+                    <Badge size='sm' text={`${searchFieldQueryPair} as ${each}`}></Badge>
+                  </span>
+                );
               })}
+
+              {filterFields.map((each, index) => {
+                return (
+                  <span key={index}>
+                    <Badge size='sm' text={`${each.fieldName} is ${each.value}`}></Badge>
+                  </span>
+                );
+              })}
+
               <span
-                className='pl-2 cursor-pointer hover:text-gray-400'
+                className='pl-1 cursor-pointer hover:text-gray-400'
                 onClick={() => {
                   searchFieldUpdated('');
                 }}>
-                [clear]
+                <Badge size='sm' color='orange' text='Clear'></Badge>
               </span>
             </>
           )}
