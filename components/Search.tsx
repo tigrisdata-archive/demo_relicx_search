@@ -60,7 +60,6 @@ export default function Search() {
       setResultData(state => ({ ...state, loading: true }));
 
       const URL = `/api/items/searchv2`;
-      //?q=${searchedState.searchFieldQueryPair}&page=${searchedState.page}&size=${searchedState.size}&order=${searchedState.order}${getStartAndEndDates}${getSearchedFields}
 
       try {
         const response = await fetch(URL, {

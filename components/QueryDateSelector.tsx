@@ -60,7 +60,7 @@ export default function QueryDateSelector({
               {searchedFields.map((each, index) => {
                 return (
                   <span key={index}>
-                    <Badge size='sm' text={`${searchFieldQueryPair} as ${each}`}></Badge>
+                    <Badge size='sm' text={`${each} contains ${searchFieldQueryPair}`}></Badge>
                   </span>
                 );
               })}

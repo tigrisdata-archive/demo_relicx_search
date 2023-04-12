@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { LogicalOperator, SelectorFilterOperator } from '@tigrisdata/core';
+import { Filter, LogicalOperator, SelectorFilterOperator } from '@tigrisdata/core';
 import { SearchQuery, SearchResult } from '@tigrisdata/core';
 import searchClient from '../../../lib/tigris';
 import { SessionV3, SESSIONV3_INDEX_NAME } from '../../../search/models/sessionv3';
@@ -7,6 +7,21 @@ import { SessionV3, SESSIONV3_INDEX_NAME } from '../../../search/models/sessionv
 type Data = {
   result?: SearchResult<SessionV3>;
   error?: string;
+};
+
+type BodySchema = {
+  q?: string;
+  searchFields?: string[];
+  filters?: {
+    field: string;
+    operator: string;
+    value: string | number | boolean;
+  }[];
+  page?: number;
+  size?: number;
+  order?: string;
+  dateStart?: string;
+  dateEnd?: string;
 };
 
 // POST /api/items/search -- searches for items matching text `searchQ`
@@ -37,14 +52,50 @@ type Data = {
 //   "dateEnd": "2023-02-13T00:00:00.000Z",
 // }
 export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
-  const { q, searchFields, filters, page, size, order, dateStart, dateEnd } = req.body;
+  const body = JSON.parse(req.body) as BodySchema;
 
   try {
     const index = await searchClient.getIndex<SessionV3>(SESSIONV3_INDEX_NAME);
 
+    if (body.dateStart) {
+      body.filters?.push({
+        field: 'indexed_properties.timestamp',
+        operator: SelectorFilterOperator.GTE,
+        value: Date.parse(body.dateStart as string) * 1000,
+      });
+    }
+    if (body.dateEnd) {
+      body.filters?.push({
+        field: 'indexed_properties.timestamp',
+        operator: SelectorFilterOperator.LTE,
+        value: Date.parse(body.dateEnd as string) * 1000,
+      });
+    }
+
+    const selectorFilters = body.filters?.map(filter => {
+      return {
+        op: filter.operator as SelectorFilterOperator,
+        fields: {
+          [filter.field]: filter.value,
+        },
+      };
+    });
+
+    let filters: Filter<SessionV3> = {};
+    if (selectorFilters && selectorFilters.length > 0) {
+      if (selectorFilters.length === 1) {
+        filters = selectorFilters[0].fields;
+      } else {
+        filters = {
+          op: LogicalOperator.AND,
+          selectorFilters: selectorFilters,
+        };
+      }
+    }
+
     const request: SearchQuery<SessionV3> = {
-      q: q ? (q as string) : '*',
-      searchFields: searchFields ?? [
+      q: body.q ?? '*',
+      searchFields: body.searchFields ?? [
         'indexed_properties.hostname',
         'indexed_properties.origin',
         'indexed_properties.sessionId',
@@ -85,38 +136,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       sort: [
         {
           field: 'indexed_properties.timestamp',
-          order: order?.toString().toLowerCase() == 'asc' ? '$asc' : '$desc',
+          order: body.order?.toString().toLowerCase() == 'asc' ? '$asc' : '$desc',
         },
       ],
-      hitsPerPage: Number(size) || 10,
-      filter:
-        dateStart && dateEnd
-          ? {
-              op: LogicalOperator.AND,
-              selectorFilters: [
-                {
-                  op: SelectorFilterOperator.GTE,
-                  fields: {
-                    indexed_properties: {
-                      timestamp: Date.parse(dateStart as string) * 1000,
-                    },
-                  },
-                },
-                {
-                  op: SelectorFilterOperator.LTE,
-                  fields: {
-                    indexed_properties: {
-                      timestamp: Date.parse(dateEnd as string) * 1000,
-                    },
-                  },
-                },
-              ],
-            }
-          : undefined,
+      hitsPerPage: Number(body.size) || 10,
+      filter: filters,
     };
 
     index
-      .search(request, Number(page) || 1)
+      .search(request, Number(body.page) || 1)
       .then(results => {
         res.status(200).json({ result: results });
       })
