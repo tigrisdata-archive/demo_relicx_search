@@ -73,6 +73,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     }
 
     const selectorFilters = body.filters?.map(filter => {
+      if (filter.field == 'commands') {
+        filter.field = 'commands.params';
+      }
+
       return {
         op: filter.operator as SelectorFilterOperator,
         fields: {
