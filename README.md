@@ -6,50 +6,26 @@ This example shows how to implement a fullstack app in TypeScript with
 
 ## Getting started
 
-### 1. Seed the data
+### 1. Install the packages
 
 ```shell
-npm run seed
+npm install
 ```
 
-This seeds the search index with the data in [scripts/data/session.json.gz](scripts/data/session.json.gz)
+### 2. Setup the environment variables
 
-### 2. Start the app
+Setup the client credentials locally. You can grab the client credentials from the
+[Application Keys page for your project](https://console.preview.tigrisdata.cloud/project/demo_relicx_search/application-keys).
+Copy the file `.env.example` to `.env` and fill in the values of the environment variables
+`TIGRIS_CLIENT_ID` and `TIGRIS_CLIENT_SECRET`.
+
+### 3. Start the app in development mode
 
 ```shell
 npm run dev
 ```
 
 The app is now running, navigate to http://localhost:3000/ in your browser to explore its UI.
-
-## Next.js API routes
-
-All the Next.js API routes are defined under `pages/api/`. We have following
-files exposing endpoints:
-
-- `/api/items/search?q={searchString}&page={page}&size={size}&order={order}`: Search sessions
-  - Query Parameters
-    - `searchString` (required): This searches sessions by `indexed_properties.*`
-    - `size` (optional): This specifies how many sessions should be returned in
-      the result
-    - `page` (optional): This specifies the page number to be returned when
-      there are more than one page of search results
-    - `order` (optional): The sort order for results in either ascending or
-      descending order. The value can either `asc` or `desc`
-    - `dateStart` (optional): This specifies the session timestamp which is
-      used to filter the matched sessions so that only the ones created on
-      or after this date are returned
-    - `dateEnd` (optional): This specifies the session timestamp which is
-      used to filter the matched sessions so that only the ones created on
-      or before this date are returned
-    - `metaOnly` (optional): When set only the metadata is returned
-      corresponding to the search and not the matched sessions
-    - `searchFields` (optional): This specifies the fields to perform the
-      search on. By default all the fields are used to perform the search
-  - Example
-    - `curl http://localhost:3000/api/items/search?q=chrome&size=1`
-    - `curl http://localhost:3000/api/items/search?q=ed&size=1&searchFields=indexed_properties.browser`
-    - `curl http://localhost:3000/api/items/search?q=chrome&metaOnly=true`
 
 <details>
 <summary>Expand for a code walkthrough</summary>
@@ -62,19 +38,21 @@ files exposing endpoints:
 ├── package.json
 ├── lib
 │   ├── tigris.ts
-├── models
-│   └── todoItems.ts
+├── search
+│   └── models
+        └── sessionv3.ts
 └── pages
     ├── index.tsx
     └── api
         └── items
-            └── search.ts
+            └── search-meta.ts
+            └── searchv2.ts
 ```
 
 ### 🪢 Search model definition
 
-[models/session.ts](search/models/session.ts) - The app has a single
-search index `session` that stores the relicx sessions.
+[models/sessionv3.ts](search/models/sessionv3.ts) - The app has a single
+search index `sessionv3` that stores the relicx sessions.
 
 ### 🌐 Connecting to Tigris
 
