@@ -6,8 +6,6 @@
     "build": "next build",
     "postbuild": "npm run setup",
     "setup": "npx ts-node scripts/setup.ts",
-    "seed": "npx ts-node scripts/seed.ts",
-    "load-s3": "npx ts-node scripts/load-s3.ts",
     "start": "next start",
     "lint": "next lint",
     "predev": "npm run setup",
