@@ -1,5 +1,5 @@
 import { Tigris } from '@tigrisdata/core';
-import { SessionV3 } from '../search/models/sessionv3';
+import { SessionV4 } from '../search/models/sessionv4';
 
 async function main() {
   // setup client
@@ -7,7 +7,7 @@ async function main() {
 
   // register index definitions
   const search = tigrisClient.getSearch();
-  await search.createOrUpdateIndex(SessionV3);
+  await search.createOrUpdateIndex(SessionV4);
 }
 
 main()

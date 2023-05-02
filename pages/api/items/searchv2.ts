@@ -2,10 +2,10 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { Filter, LogicalOperator, SelectorFilterOperator } from '@tigrisdata/core';
 import { SearchQuery, SearchResult } from '@tigrisdata/core';
 import searchClient from '../../../lib/tigris';
-import { SessionV3, SESSIONV3_INDEX_NAME } from '../../../search/models/sessionv3';
+import { SessionV4, SESSIONV4_INDEX_NAME } from '../../../search/models/sessionv4';
 
 type Data = {
-  result?: SearchResult<SessionV3>;
+  result?: SearchResult<SessionV4>;
   error?: string;
 };
 
@@ -55,7 +55,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const body = JSON.parse(req.body) as BodySchema;
 
   try {
-    const index = await searchClient.getIndex<SessionV3>(SESSIONV3_INDEX_NAME);
+    const index = await searchClient.getIndex<SessionV4>(SESSIONV4_INDEX_NAME);
 
     if (body.dateStart) {
       body.filters?.push({
@@ -85,7 +85,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       };
     });
 
-    let filters: Filter<SessionV3> = {};
+    let filters: Filter<SessionV4> = {};
     if (selectorFilters && selectorFilters.length > 0) {
       if (selectorFilters.length === 1) {
         filters = selectorFilters[0].fields;
@@ -97,7 +97,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       }
     }
 
-    const request: SearchQuery<SessionV3> = {
+    const request: SearchQuery<SessionV4> = {
       q: body.q ?? '*',
       searchFields: body.searchFields ?? [
         'indexed_properties.hostname',
