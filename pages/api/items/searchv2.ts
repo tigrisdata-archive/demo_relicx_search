@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { Filter, LogicalOperator, SelectorFilterOperator } from '@tigrisdata/core';
+import { Filter } from '@tigrisdata/core';
 import { SearchQuery, SearchResult } from '@tigrisdata/core';
 import searchClient from '../../../lib/tigris';
 import { SessionV4, SESSIONV4_INDEX_NAME } from '../../../search/models/sessionv4';
@@ -13,9 +13,7 @@ type BodySchema = {
   q?: string;
   searchFields?: string[];
   filters?: {
-    field: string;
-    operator: string;
-    value: string | number | boolean;
+    [x: string]: { [x: string]: string | number | boolean };
   }[];
   page?: number;
   size?: number;
@@ -35,14 +33,10 @@ type BodySchema = {
 //    ],
 // "filters": [
 //   {
-//     "field": "indexed_properties.geoCoordinates.countryName",
-//     "operator": "eq",
-//     "value": "United States"
+//     "indexed_properties.geoCoordinates.countryName": {"$eq": "United States"}
 //   },
 //   {
-//     "field": "indexed_properties.geoCoordinates.countryName",
-//     "operator": "eq",
-//     "value": "Canada"
+//     "indexed_properties.geoCoordinates.countryName": {"$eq": "Canada"}
 //   }
 // ],
 //   "page": 1,
@@ -59,40 +53,26 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     if (body.dateStart) {
       body.filters?.push({
-        field: 'indexed_properties.timestamp',
-        operator: SelectorFilterOperator.GTE,
-        value: Date.parse(body.dateStart as string) * 1000,
+        'indexed_properties.timestamp': {
+          $gte: Date.parse(body.dateStart as string) * 1000,
+        },
       });
     }
     if (body.dateEnd) {
       body.filters?.push({
-        field: 'indexed_properties.timestamp',
-        operator: SelectorFilterOperator.LTE,
-        value: Date.parse(body.dateEnd as string) * 1000,
+        'indexed_properties.timestamp': {
+          $lte: Date.parse(body.dateEnd as string) * 1000,
+        },
       });
     }
 
-    const selectorFilters = body.filters?.map(filter => {
-      if (filter.field == 'commands') {
-        filter.field = 'commands.params';
-      }
-
-      return {
-        op: filter.operator as SelectorFilterOperator,
-        fields: {
-          [filter.field]: filter.value,
-        },
-      };
-    });
-
     let filters: Filter<SessionV4> = {};
-    if (selectorFilters && selectorFilters.length > 0) {
-      if (selectorFilters.length === 1) {
-        filters = selectorFilters[0].fields;
+    if (body.filters && body.filters.length > 0) {
+      if (body.filters.length === 1) {
+        filters = body.filters[0];
       } else {
         filters = {
-          op: LogicalOperator.AND,
-          selectorFilters: selectorFilters,
+          $and: body.filters,
         };
       }
     }
@@ -125,7 +105,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         'indexed_properties.sessionType',
         'commands',
         'issues',
-        'resources'
+        'resources',
       ],
       facets: [
         'indexed_properties.geoCoordinates.city',

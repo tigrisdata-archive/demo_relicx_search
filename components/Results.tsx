@@ -1,17 +1,4 @@
-import {
-  Text,
-  Card,
-  Title,
-  Flex,
-  Subtitle,
-  Metric,
-  Bold,
-  BarList,
-  DonutChart,
-  BarChart,
-  ColGrid,
-  Col,
-} from '@tremor/react';
+import { Text, Card, Title, Flex, Metric, Bold, BarList, DonutChart, ColGrid, Col } from '@tremor/react';
 import { IFacets, ISearchResult, IStatsEach } from './types';
 import { useMemo } from 'react';
 import 'react-tooltip/dist/react-tooltip.css';
