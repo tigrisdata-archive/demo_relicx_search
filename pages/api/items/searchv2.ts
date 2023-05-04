@@ -130,7 +130,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         'issues.severity',
         'issues.urlParameterized',
         'issues.stackTrace',
-        'issues.frameInfo.frameId',
         'resources.method',
         'resources.url'
       ],
