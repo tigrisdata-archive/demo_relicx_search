@@ -46,6 +46,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         'indexed_properties.labels',
         'indexed_properties.sessionType',
         'commands',
+        'issues.relicx_type',
+        'issues.message',
+        'issues.source',
+        'issues.severity',
+        'issues.urlParameterized',
+        'issues.stackTrace',
+        'resources.method',
+        'resources.url'
       ],
       hitsPerPage: 10,
     };
