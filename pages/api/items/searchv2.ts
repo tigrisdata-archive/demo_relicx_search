@@ -77,8 +77,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       }
     }
 
-    console.log('filters', filters);
-
     const request: SearchQuery<SessionV4> = {
       q: body.q ?? '*',
       searchFields: body.searchFields ?? [
