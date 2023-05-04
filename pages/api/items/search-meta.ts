@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { SearchMeta, SearchQuery } from '@tigrisdata/core';
 import searchClient from '../../../lib/tigris';
-import { SessionV3, SESSIONV3_INDEX_NAME } from '../../../search/models/sessionv3';
+import { SessionV4, SESSIONV4_INDEX_NAME } from '../../../search/models/sessionv4';
 
 type Data = {
   result?: SearchMeta;
@@ -17,9 +17,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     return;
   }
   try {
-    const index = await searchClient.getIndex<SessionV3>(SESSIONV3_INDEX_NAME);
+    const index = await searchClient.getIndex<SessionV4>(SESSIONV4_INDEX_NAME);
 
-    const request: SearchQuery<SessionV3> = {
+    const request: SearchQuery<SessionV4> = {
       q: q as string,
       searchFields: [
         'indexed_properties.hostname',
@@ -46,14 +46,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         'indexed_properties.labels',
         'indexed_properties.sessionType',
         'commands',
-        'issues.relicx_type',
-        'issues.message',
-        'issues.source',
-        'issues.severity',
-        'issues.urlParameterized',
-        'issues.stackTrace',
-        'resources.method',
-        'resources.url'
+        'issues',
+        'resources'
       ],
       hitsPerPage: 10,
     };
