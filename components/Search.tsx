@@ -68,7 +68,7 @@ export default function Search() {
             q: searchedState.searchFieldQueryPair,
             searchFields: searchedState.searchedFields,
             filters: searchedState.filterFields.map(element => {
-              return { field: element.fieldName, operator: 'eq', value: element.value };
+              return { field: element.fieldName, operator: '$eq', value: element.value };
             }),
             page: searchedState.page,
             size: searchedState.size,

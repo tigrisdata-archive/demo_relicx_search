@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@heroicons/react": "^2.0.16",
-    "@tigrisdata/core": "^1.0.0-beta.45",
+    "@tigrisdata/core": "^1.0.0-beta.48",
     "@tremor/react": "^1.8.2",
     "dotenv": "^16.0.3",
     "heroicons": "^1.0.6",

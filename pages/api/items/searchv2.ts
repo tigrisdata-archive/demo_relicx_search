@@ -78,21 +78,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       }
 
       return {
-        op: filter.operator as SelectorFilterOperator,
-        fields: {
-          [filter.field]: filter.value,
-        },
+        [filter.field]: { [filter.operator]: filter.value },
       };
     });
 
     let filters: Filter<SessionV4> = {};
     if (selectorFilters && selectorFilters.length > 0) {
       if (selectorFilters.length === 1) {
-        filters = selectorFilters[0].fields;
+        filters = selectorFilters[0];
       } else {
         filters = {
-          op: LogicalOperator.AND,
-          selectorFilters: selectorFilters,
+          $and: selectorFilters,
         };
       }
     }
@@ -125,7 +121,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         'indexed_properties.sessionType',
         'commands',
         'issues',
-        'resources'
+        'resources',
       ],
       facets: [
         'indexed_properties.geoCoordinates.city',
