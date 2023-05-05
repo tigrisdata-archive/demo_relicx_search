@@ -10,7 +10,7 @@ primary_region = "sjc"
   PORT = "8080"
   TIGRIS_DB_BRANCH = "main"
   TIGRIS_PROJECT = "demo_relicx_search"
-  TIGRIS_URI = "api.preview.tigrisdata.cloud"
+  TIGRIS_URI = "api-preview.tigrisdata.io"
 
 [http_service]
   internal_port = 8080
