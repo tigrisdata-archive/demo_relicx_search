@@ -7,7 +7,7 @@ async function main() {
 
   // register index definitions
   const search = tigrisClient.getSearch();
-  await search.createOrUpdateIndexFromClass(SessionV4, SESSIONV4_INDEX_NAME);
+  await search.createOrUpdateIndex(SESSIONV4_INDEX_NAME, SessionV4);
 }
 
 main()

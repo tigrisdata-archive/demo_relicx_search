@@ -30,6 +30,16 @@ The app is now running, navigate to http://localhost:3000/ in your browser to ex
 <details>
 <summary>Expand for a code walkthrough</summary>
 
+## Deployment
+
+The app is setup to be deployed to fly.io which is a modern application deployment platform.
+
+The application can be deployed by using the following command:
+
+```bash
+fly deploy
+```
+
 ## 👀 Code walkthrough
 
 ### 📂 File structure
